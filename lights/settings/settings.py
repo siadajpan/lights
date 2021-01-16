@@ -3,7 +3,7 @@ class Mqtt:
     PORT = '1883'
     USERNAME = 'karol'
     PASSWORD = 'klapeczki'
-    TOPIC = 'lights/master_bedroom/bed'
+    TOPIC = 'lights/master_bedroom/bed/'
     ERROR_TOPIC = 'errors/lights'
 
 

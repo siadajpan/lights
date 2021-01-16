@@ -17,9 +17,6 @@ class MessageManager:
     def execute_message(self, payload: str, topic=settings.Mqtt.TOPIC) -> bool:
         self.logger.debug(f'Searching for message topic: {topic}, payload: {payload}')
         for message in self.messages:
-            if message.payload != payload:
-                continue
-
             if message.topic != topic:
                 continue
 

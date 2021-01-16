@@ -6,7 +6,7 @@ from lights.settings import settings
 class TurnOff(AbstractMessage):
     def __init__(self):
         super().__init__()
-        self.payload = settings.Messages.TURN_OFF
+        self.topic = settings.Mqtt.TOPIC + settings.Messages.TURN_OFF
         self.light_controller = LightController()
 
     def execute(self, *args, **kwargs) -> bool:
