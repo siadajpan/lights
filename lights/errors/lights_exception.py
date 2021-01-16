@@ -1,0 +1,2 @@
+class LightsException(BaseException):
+    pass

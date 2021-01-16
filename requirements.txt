@@ -1,0 +1,4 @@
+paho-mqtt
+board
+adafruit-circuitpython-neopixel
+singleton-decorator
