@@ -13,25 +13,27 @@ class MQTTClient:
                                   protocol=mqtt.MQTTv311, transport="tcp")
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
+        self.client.username_pw_set(username=settings.Mqtt.USERNAME,
+                                    password=settings.Mqtt.PASSWORD)
         self.message_manager = MessageManager()
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def connect(self):
         self.logger.info(f'MQTT client connecting to '
                          f'{settings.Mqtt.ADDRESS}:{settings.Mqtt.PORT}')
-        self.client.username_pw_set(username=settings.Mqtt.USERNAME,
-                                    password=settings.Mqtt.PASSWORD)
         self.client.connect(
             settings.Mqtt.ADDRESS, settings.Mqtt.PORT, 60)
+
+        topic = settings.Mqtt.TOPIC + '#'
+        self.logger.info(f'Subscribing to {topic}')
+        self.client.subscribe(topic)
 
     def loop_forever(self):
         self.logger.info('MQTT client looping start')
         self.client.loop_forever()
 
     def on_connect(self, client, userdata, flags, rc):
-        topic = settings.Mqtt.TOPIC + '#'
-        self.logger.info(f'MQTT connected, subscribing to {topic}')
-        self.client.subscribe(topic)
+        self.logger.info(f'MQTT connected')
 
     def on_message(self, client, userdata, msg):
         self.logger.info(f'Message received topic: '
