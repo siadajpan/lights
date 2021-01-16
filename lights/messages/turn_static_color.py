@@ -14,14 +14,13 @@ class TurnStaticColor(AbstractMessage):
 
     def execute(self, *args, **kwargs):
         self.logger.debug('Executing turn_static message')
-        color = kwargs.get(settings.Messages.COLOR, None)
-        if color is None:
+        if args is None:
             error_msg = 'Executing Turn static color without ' \
                         'color value in payload'
             self.logger.error(error_msg)
             return False
 
-        color = eval(color)
+        color = eval(args[0])
         self.logger.debug('Checking if color is correctly formatted')
         utils.check_color_message(color)
         self.logger.debug('Color has correct format')
