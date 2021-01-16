@@ -30,7 +30,7 @@ class MQTTClient:
 
     def on_connect(self, client, userdata, flags, rc):
         self.logger.info(f'MQTT connected, subscribing to {settings.Mqtt.TOPIC}')
-        client.subscribe(settings.Mqtt.TOPIC)
+        client.subscribe(settings.Mqtt.TOPIC + '/#')
 
     def on_message(self, client, userdata, msg):
         self.logger.info(f'Message received topic: '
