@@ -1,6 +1,6 @@
 class Mqtt:
     ADDRESS = '192.168.0.201'
-    PORT = '1883'
+    PORT = 1883
     USERNAME = 'karol'
     PASSWORD = 'klapeczki'
     TOPIC = 'lights/master_bedroom/bed/'
