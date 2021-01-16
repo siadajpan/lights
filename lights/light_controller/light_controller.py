@@ -17,10 +17,10 @@ class LightController:
 
     def turn_off(self):
         self.logger.info('Turning off lights')
-        for i in self.led_amount:
+        for i in range(self.led_amount):
             self.pixels[i] = (0, 0, 0)
 
     def turn_static_color(self, color: Tuple[int, int, int]):
         self.logger.info(f'Turning lights to {color}')
-        for i in self.led_amount:
+        for i in range(self.led_amount):
             self.pixels[i] = color
