@@ -19,6 +19,8 @@ class MQTTClient:
     def connect(self):
         self.logger.info(f'MQTT client connecting to '
                          f'{settings.Mqtt.ADDRESS}:{settings.Mqtt.PORT}')
+        self.client.username_pw_set(username=settings.Mqtt.USERNAME,
+                                    password=settings.Mqtt.PASSWORD)
         self.client.connect(
             settings.Mqtt.ADDRESS, settings.Mqtt.PORT, 60)
 
