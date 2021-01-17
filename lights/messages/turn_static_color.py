@@ -1,6 +1,3 @@
-from typing import Tuple
-
-from lights.errors.incorrect_payload import IncorrectPayloadException
 from lights.light_controller.light_controller import LightController
 from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage

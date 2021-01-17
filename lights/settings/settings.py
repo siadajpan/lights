@@ -11,6 +11,9 @@ class Messages:
     COLOR = 'color'
     TURN_OFF = 'turn_off'
     TURN_STATIC = 'turn_static'
+    TURN_SLOWLY = 'turn_slowly'
+
 
 class Lights:
     LED_AMOUNT = 7
+    SLOW_CHANGE_WAIT_MS = 50
