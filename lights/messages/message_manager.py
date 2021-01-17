@@ -54,6 +54,8 @@ class MessageManager(Thread):
     def run(self) -> None:
         while not self._stop:
             message: mqtt.MQTTMessage = self.message_queue.get()
+            self.logger.debug(f'Got message topic: {message.topic} '
+                              f'payload: {message.payload}')
             try:
                 self.execute_message(message.payload, message.topic)
             except LightsException as ex:

@@ -1,6 +1,7 @@
 import logging
 import queue
 import time
+from threading import Thread
 from typing import Tuple, List
 
 import board
@@ -12,8 +13,9 @@ from lights.settings import settings
 
 
 @singleton
-class LightController:
+class LightController(Thread):
     def __init__(self):
+        super().__init__()
         self._led_amount = settings.Lights.LED_AMOUNT
         self._pixels = neopixel.NeoPixel(board.D18, self._led_amount)
         self._logger = logging.getLogger(self.__class__.__name__)
