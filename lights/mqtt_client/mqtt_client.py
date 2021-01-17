@@ -2,7 +2,9 @@ import logging
 
 import paho.mqtt.client as mqtt
 
-from lights.errors.incorrect_payload import IncorrectPayloadException
+from lights.errors.incorrect_payload_exception import IncorrectPayloadException
+from lights.errors.incorrect_topic_exception import IncorrectTopicException
+from lights.errors.lights_exception import LightsException
 from lights.messages.message_manager import MessageManager
 from lights.settings import settings
 
@@ -24,21 +26,22 @@ class MQTTClient:
         self.client.connect(
             settings.Mqtt.ADDRESS, settings.Mqtt.PORT, 60)
 
-        topic = settings.Mqtt.TOPIC + '#'
-        self.logger.info(f'Subscribing to {topic}')
-        self.client.subscribe(topic)
-
     def loop_forever(self):
         self.logger.info('MQTT client looping start')
         self.client.loop_forever()
 
     def on_connect(self, client, userdata, flags, rc):
         self.logger.info(f'MQTT connected')
+        topic = settings.Mqtt.TOPIC + '#'
+        self.logger.info(f'Subscribing to {topic}')
+        self.client.subscribe(topic)
 
     def on_message(self, client, userdata, msg):
         self.logger.info(f'Message received topic: '
                          f'{msg.topic}, payload: {msg.payload}')
         try:
             self.message_manager.execute_message(msg.payload, msg.topic)
-        except IncorrectPayloadException as ex:
+        except LightsException as ex:
             self.client.publish(settings.Mqtt.ERROR_TOPIC, ex.message)
+        except Exception as ex:
+            self.client.publish(settings.Mqtt.ERROR_TOPIC, ex)
