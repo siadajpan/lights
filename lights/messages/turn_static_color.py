@@ -14,13 +14,6 @@ class TurnStaticColor(AbstractMessage):
         self.light_controller = LightController()
 
     def execute(self, *args, **kwargs):
-        self.logger.debug('Executing turn_static message')
-        if args is None:
-            error_msg = 'Executing Turn static color without ' \
-                        'color value in payload'
-            self.logger.error(error_msg)
-            return False
-
         self.logger.debug('Checking if color is correctly formatted')
         color = utils.check_color_message(args[0])
         self.logger.debug('Color has correct format')
