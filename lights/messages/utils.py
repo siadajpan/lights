@@ -34,7 +34,6 @@ def check_color_message(message) -> Tuple[int, int, int]:
         logger.error(error_message)
         raise IncorrectPayloadException(error_message)
     except Exception as ex:
-        print(ex)
         error_message = f'Checking color payload raised exception ' \
                         f'expected (uint8, uint8, uint8), ' \
                         f'got {message}, exception: {ex}'

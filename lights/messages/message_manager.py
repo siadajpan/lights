@@ -19,7 +19,12 @@ class MessageManager:
 
     def execute_message(self, payload: str, topic=settings.Mqtt.TOPIC):
         message = self.check_message(topic)
-        message.execute(payload)
+        try:
+            message.execute(payload)
+        except Exception as ex:
+            self.logger.error(f'Error raised during execution of message. '
+                              f'Exception: {ex}')
+            raise ex
 
     def check_message(self, topic) -> AbstractMessage:
         self.logger.debug(f'Searching for message topic: {topic}')
