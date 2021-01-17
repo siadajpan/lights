@@ -7,6 +7,7 @@ from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 
 logger = logging.getLogger('lights_utils')
 
+
 def evaluate_message(message) -> Any:
     try:
         message = eval(message)
@@ -33,6 +34,7 @@ def check_color_message(message) -> Tuple[int, int, int]:
         logger.error(error_message)
         raise IncorrectPayloadException(error_message)
     except Exception as ex:
+        print(ex)
         error_message = f'Checking color payload raised exception ' \
                         f'expected (uint8, uint8, uint8), ' \
                         f'got {message}, exception: {ex}'
@@ -56,23 +58,32 @@ def check_color_value_message(message) -> Tuple[Tuple[int, int, int], float]:
                         f'got {message}'
         logger.error(error_message)
         raise IncorrectPayloadException(error_message)
+    except Exception as ex:
+        error_message = f'Checking payload evaluation raised exception ' \
+                        f'got {message}, exception: {ex}'
+        logger.error(error_message)
+        raise IncorrectPayloadException(error_message)
 
 
-def create_color_change_table(from_color, to_color, steps) -> List[Tuple[int, int, int]]:
+def create_color_change_table(from_color, to_color, steps) \
+        -> List[Tuple[int, int, int]]:
     # list 0-1 of multipliers length of steps
-    change_table = [- 0.5 * math.cos(x/(steps - 1) * math.pi) + 0.5 for x in range(steps)]
+    change_table = [- 0.5 * math.cos(x / (steps - 1) * math.pi) + 0.5 for x in
+                    range(steps)]
 
     values_out = []
     for from_value, to_value in zip(from_color, to_color):
         value_change = to_value - from_value
-        values_out.append([int(x * value_change + from_value) for x in change_table])
+        values_out.append(
+            [int(x * value_change + from_value) for x in change_table])
 
     colors_out = [(r, g, b) for r, g, b in zip(*values_out)]
 
     return colors_out
 
 
-def create_colors_change_table(from_colors, to_colors, steps) -> List[List[Tuple[int, int, int]]]:
+def create_colors_change_table(from_colors, to_colors, steps) \
+        -> List[List[Tuple[int, int, int]]]:
     """
     Create list of colors that each of LED needs to go through to
     switch from one color to another
@@ -88,14 +99,7 @@ def create_colors_change_table(from_colors, to_colors, steps) -> List[List[Tuple
 
     colors_list_out = []
     for from_color, to_color in zip(from_colors, to_colors):
-        colors_list_out.append(create_color_change_table(from_color, to_color, steps))
+        colors_list_out.append(
+            create_color_change_table(from_color, to_color, steps))
 
     return colors_list_out
-
-if __name__ == '__main__':
-    current_colors = [[0, 0, 0], [0, 0, 0]]
-    color = (120, 240, 1)
-    steps = 3
-    res = create_colors_change_table(
-            current_colors, [color] * len(current_colors), steps)
-    print(res)
