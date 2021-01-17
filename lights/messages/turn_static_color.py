@@ -1,5 +1,6 @@
 from typing import Tuple
 
+from lights.errors.incorrect_payload import IncorrectPayloadException
 from lights.light_controller.light_controller import LightController
 from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage
@@ -20,8 +21,7 @@ class TurnStaticColor(AbstractMessage):
             self.logger.error(error_msg)
             return False
 
-        color = eval(args[0])
         self.logger.debug('Checking if color is correctly formatted')
-        utils.check_color_message(color)
+        color = utils.check_color_message(args[0])
         self.logger.debug('Color has correct format')
         self.light_controller.turn_static_color(color)
