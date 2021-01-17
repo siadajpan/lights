@@ -38,7 +38,7 @@ class LightController(Thread):
 
     def turn_into_colors_and_wait(self, colors, time_span):
         start_time = time.time()
-        self.light_controller.turn_into_colors(colors)
+        self.turn_into_colors(colors)
         light_turning_time = time.time() - start_time
         wait_time = time_span - light_turning_time
         if wait_time > 0:
