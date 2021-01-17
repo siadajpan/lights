@@ -43,6 +43,6 @@ class MQTTClient:
         try:
             self.message_manager.execute_message(msg.payload, msg.topic)
         except LightsException as ex:
-            self.client.publish(settings.Mqtt.ERROR_TOPIC, ex)
+            self.client.publish(settings.Mqtt.ERROR_TOPIC, ex.message)
         except Exception as ex:
             self.client.publish(settings.Mqtt.ERROR_TOPIC, ex)
