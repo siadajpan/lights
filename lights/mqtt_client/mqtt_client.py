@@ -26,16 +26,15 @@ class MQTTClient:
         self.client.connect(
             settings.Mqtt.ADDRESS, settings.Mqtt.PORT, 60)
 
-        topic = settings.Mqtt.TOPIC + '#'
-        self.logger.info(f'Subscribing to {topic}')
-        self.client.subscribe(topic)
-
     def loop_forever(self):
         self.logger.info('MQTT client looping start')
         self.client.loop_forever()
 
     def on_connect(self, client, userdata, flags, rc):
         self.logger.info(f'MQTT connected')
+        topic = settings.Mqtt.TOPIC + '#'
+        self.logger.info(f'Subscribing to {topic}')
+        self.client.subscribe(topic)
 
     def on_message(self, client, userdata, msg):
         self.logger.info(f'Message received topic: '
