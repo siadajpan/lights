@@ -21,16 +21,12 @@ class LightController:
             self.pixels[i] = (0, 0, 0)
 
     def turn_static_color(self, color: Tuple[int, int, int]):
-        self.logger.info(f'Turning lights to {color}')
         for i in range(self.led_amount):
             self.pixels[i] = color
 
     def turn_into_colors(self, colors: List[Tuple[int, int, int]]):
-        self.logger.info(f'Turning ligths to {colors}')
         for i, color in enumerate(colors):
             self.pixels[i] = color
 
     def read_colors(self) -> List[Tuple[int, int, int]]:
-        self.logger.info(f'Reading colors')
-
         return eval(str(self.pixels))
