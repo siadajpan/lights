@@ -35,7 +35,7 @@ def check_color_value_message(message) -> Tuple[Tuple[int, int, int], float]:
     try:
         message = evaluate_message(message)
         assert len(message) == 2
-        color = check_color_message(message[0])
+        color = check_color_message(str(message[0]))
         value = message[1]
         assert (isinstance(value, float) or isinstance(value, int))
         assert (value > 0)
