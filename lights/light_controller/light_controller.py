@@ -70,11 +70,13 @@ class LightController(Thread):
 
             self.executing_priority = light_action.priority
             light_action.execute()
+        self._logger.debug('Exiting')
 
     def empty_queue(self):
         while not self._actions_queue.empty():
             self._actions_queue.get()
 
     def stop(self):
+        self._logger.debug('Stopping')
         self._stop_thread = True
         self._actions_queue.put(EmptyLightAction())

@@ -19,10 +19,10 @@ MESSAGES = [TurnOff(), TurnStatic(), TurnSlowlyStatic(), Empty()]
 class MessageManager(Thread):
     def __init__(self, message_queue: Queue, publish_method: Callable):
         super().__init__()
-        self.messages: List[AbstractMessage] = MESSAGES
-        self.logger = logging.getLogger(self.__class__.__name__)
-        self._topic_registered = [message.topic for message in self.messages]
-        self.message_queue = message_queue
+        self._messages: List[AbstractMessage] = MESSAGES
+        self._logger = logging.getLogger(self.__class__.__name__)
+        self._topic_registered = [message.topic for message in self._messages]
+        self._message_queue = message_queue
         self._publish_method = publish_method
         self._stop_thread = False
 
@@ -34,27 +34,27 @@ class MessageManager(Thread):
         try:
             message.execute(payload)
         except Exception as ex:
-            self.logger.error(f'Error raised during execution of message. '
+            self._logger.error(f'Error raised during execution of message. '
                               f'Exception: {ex}')
             raise ex
 
     def check_message(self, topic) -> AbstractMessage:
-        self.logger.debug(f'Searching for message topic: {topic}')
+        self._logger.debug(f'Searching for message topic: {topic}')
         if topic in self._topic_registered:
-            return self.messages[self._topic_registered.index(topic)]
+            return self._messages[self._topic_registered.index(topic)]
 
         error_message = \
             f'Received message not registered. Registered topics: ' \
-            f'{[message.topic for message in self.messages]} got: {topic}'
+            f'{[message.topic for message in self._messages]} got: {topic}'
 
-        self.logger.error(error_message)
+        self._logger.error(error_message)
 
         raise IncorrectTopicException(error_message)
 
     def run(self) -> None:
         while not self._stop_thread:
-            message: mqtt.MQTTMessage = self.message_queue.get()
-            self.logger.debug(f'Got message topic: {message.topic} '
+            message: mqtt.MQTTMessage = self._message_queue.get()
+            self._logger.debug(f'Got message topic: {message.topic} '
                               f'payload: {message.payload}')
             try:
                 self.execute_message(message.topic, message.payload)
@@ -62,7 +62,9 @@ class MessageManager(Thread):
                 self.publish(settings.Mqtt.ERROR_TOPIC, ex.message)
             except Exception as ex:
                 self.publish(settings.Mqtt.ERROR_TOPIC, ex)
+        self._logger.debug('Exiting')
 
     def stop(self):
+        self._logger.debug('Stopping')
         self._stop_thread = True
-        self.message_queue.put(Empty())
+        self._message_queue.put(Empty())
