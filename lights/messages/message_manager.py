@@ -1,6 +1,7 @@
 import logging
 from typing import List
 
+from lights.errors.incorrect_topic_exception import IncorrectTopicException
 from lights.messages.abstract_message import AbstractMessage
 from lights.messages.turn_off import TurnOff
 from lights.messages.turn_static_color import TurnStaticColor
@@ -21,8 +22,10 @@ class MessageManager:
                 continue
 
             self.logger.debug('Executing message')
-            return message.execute(payload)
+            message.execute(payload)
 
-        self.logger.error(f'Received message not found. Expected messages: '
-                          f'{[(message.topic, message.payload) for message in self.messages]}')
-        return False
+        error_message = f'Received message not found. Expected messages: ' \
+                        f'{[(message.topic, message.payload) for message in self.messages]}'
+        self.logger.error(error_message)
+
+        raise IncorrectTopicException(error_message)
