@@ -3,12 +3,10 @@ from lights.messages.abstract_message import AbstractMessage
 from lights.settings import settings
 
 
-class TurnOff(AbstractMessage):
+class Empty(AbstractMessage):
     def __init__(self):
         super().__init__()
-        self.topic = settings.Mqtt.TOPIC + settings.Messages.TURN_OFF
-        self.light_controller = LightController()
+        self.topic = settings.Messages.EMPTY
 
     def execute(self, *args, **kwargs):
-        self.logger.debug('Executing Turn Off message')
-        self.light_controller.turn_off()
+        pass

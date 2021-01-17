@@ -1,6 +1,8 @@
 import logging
 from datetime import datetime
 
+from lights.light_controller.light_controller import LightController
+from lights.messages.message_manager import MessageManager
 from lights.mqtt_client.mqtt_client import MQTTClient
 
 if __name__ == '__main__':
@@ -12,7 +14,21 @@ if __name__ == '__main__':
                         format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                         datefmt='%H:%M:%S',
                         level=logging.DEBUG)
-    logging.info('Starting lights')
+
+    logging.info('Starting lights controller')
+    light_controller = LightController()
+    light_controller.start()
+
+    logging.info('Starting mqtt client')
     client = MQTTClient()
     client.connect()
-    client.loop_forever()
+
+    logging.info('Starting message manager')
+    message_manager = MessageManager(client.message_queue, client.publish)
+    message_manager.start()
+
+    try:
+        client.loop_forever()
+    except KeyboardInterrupt:
+        light_controller.stop()
+        message_manager.stop()
