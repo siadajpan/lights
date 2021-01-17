@@ -47,7 +47,7 @@ class LightController(Thread):
     def read_colors(self) -> List[Tuple[int, int, int]]:
         return eval(str(self._pixels))
 
-    def add_action(self, action):
+    def add_action(self, action: LightAction):
         self.add_actions([action])
 
     def add_actions(self, actions: List[LightAction]):

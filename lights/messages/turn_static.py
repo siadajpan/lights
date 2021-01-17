@@ -16,6 +16,7 @@ class TurnStatic(AbstractMessage):
         color = utils.check_color_message(args[0])
         self.logger.debug('Color has correct format')
 
-        action = LightAction(self.light_controller.turn_static_color, [color])
+        action = LightAction(self.light_controller.turn_static_color,
+                             args=[color])
 
         self.light_controller.add_action(action)

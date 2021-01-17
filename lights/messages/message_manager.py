@@ -29,7 +29,7 @@ class MessageManager(Thread):
     def publish(self, topic, payload):
         self._publish_method(topic, payload)
 
-    def execute_message(self, payload: str, topic=settings.Mqtt.TOPIC):
+    def execute_message(self, topic: str, payload: str):
         message = self.check_message(topic)
         try:
             message.execute(payload)
@@ -57,7 +57,7 @@ class MessageManager(Thread):
             self.logger.debug(f'Got message topic: {message.topic} '
                               f'payload: {message.payload}')
             try:
-                self.execute_message(message.payload, message.topic)
+                self.execute_message(message.topic, message.payload)
             except LightsException as ex:
                 self.publish(settings.Mqtt.ERROR_TOPIC, ex.message)
             except Exception as ex:
