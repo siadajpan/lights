@@ -55,7 +55,8 @@ class LightController(Thread):
             self._actions_queue.put(actions)
         else:
             self.empty_queue()
-            self._actions_queue.put(actions)
+            for action in actions:
+                self._actions_queue.put(action)
 
     def run(self):
         while not self._stop:
