@@ -17,6 +17,12 @@ def evaluate_message(message) -> Any:
                         f'got {message}'
         logger.error(error_message)
         raise IncorrectPayloadException(error_message)
+    except Exception as ex:
+        error_message = f'Checking color payload raised exception ' \
+                        f'got {message}, exception: {ex}'
+        logger.error(error_message)
+        raise IncorrectPayloadException(error_message)
+
 
 
 def check_color_message(message) -> Tuple[int, int, int]:
