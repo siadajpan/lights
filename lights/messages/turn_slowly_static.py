@@ -26,4 +26,4 @@ class TurnSlowlyStatic(AbstractMessage):
 
         for color_set in zip(*leds_colors):
             self.light_controller.turn_into_colors(list(color_set))
-            time.sleep(settings.Lights.SLOW_CHANGE_WAIT_MS)
+            time.sleep(settings.Lights.SLOW_CHANGE_WAIT_MS / 1000)
