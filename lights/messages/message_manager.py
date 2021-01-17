@@ -15,18 +15,21 @@ class MessageManager:
     def __init__(self):
         self.messages: List[AbstractMessage] = MESSAGES
         self.logger = logging.getLogger(self.__class__.__name__)
+        self._topic_registered = [message.topic for message in self.messages]
 
     def execute_message(self, payload: str, topic=settings.Mqtt.TOPIC):
-        self.logger.debug(f'Searching for message topic: {topic}, payload: {payload}')
-        for message in self.messages:
-            if message.topic != topic:
-                continue
+        message = self.check_message(topic)
+        message.execute(payload)
 
-            self.logger.debug('Executing message')
-            message.execute(payload)
+    def check_message(self, topic) -> AbstractMessage:
+        self.logger.debug(f'Searching for message topic: {topic}')
+        if topic in self._topic_registered:
+            return self.messages[self._topic_registered.index(topic)]
 
-        error_message = f'Received message not found. Expected messages: ' \
-                        f'{[(message.topic, message.payload) for message in self.messages]}'
+        error_message = \
+            f'Received message not registered. Registered topics: ' \
+            f'{[message.topic for message in self.messages]} got: {topic}'
+
         self.logger.error(error_message)
 
         raise IncorrectTopicException(error_message)
