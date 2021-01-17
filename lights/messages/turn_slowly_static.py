@@ -1,5 +1,6 @@
 import time
 
+from lights.light_controller.light_action import LightAction
 from lights.light_controller.light_controller import LightController
 from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage
@@ -23,10 +24,12 @@ class TurnSlowlyStatic(AbstractMessage):
         self.logger.debug(f'Changing leds of colors {current_colors} '
                           f'to {color} in {steps} steps')
 
+        actions = []
         for color_set in zip(*leds_colors):
-            start_time = time.time()
-            self.light_controller.turn_into_colors(list(color_set))
-            light_turning_time = time.time() - start_time
-            wait_time = settings.Lights.SLOW_CHANGE_WAIT_MS / 1000 - light_turning_time
-            if wait_time > 0:
-                time.sleep(wait_time)
+            action = LightAction(
+                self.light_controller.turn_into_colors_and_wait,
+                [color_set, settings.Lights.SLOW_CHANGE_WAIT_MS / 1000]
+            )
+            actions.append(action)
+
+        self.light_controller.add_actions(actions)

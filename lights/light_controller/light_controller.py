@@ -34,6 +34,14 @@ class LightController:
         for i, color in enumerate(colors):
             self._pixels[i] = color
 
+    def turn_into_colors_and_wait(self, colors, time_span):
+        start_time = time.time()
+        self.light_controller.turn_into_colors(colors)
+        light_turning_time = time.time() - start_time
+        wait_time = time_span - light_turning_time
+        if wait_time > 0:
+            time.sleep(wait_time)
+
     def read_colors(self) -> List[Tuple[int, int, int]]:
         return eval(str(self._pixels))
 
@@ -53,6 +61,7 @@ class LightController:
                 self.executing_priority = 0
 
             light_action: LightAction = self._actions_queue.get()
+
             self.executing_priority = light_action.priority
             light_action.execute()
 

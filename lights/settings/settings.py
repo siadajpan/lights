@@ -18,3 +18,8 @@ class Messages:
 class Lights:
     LED_AMOUNT = 7
     SLOW_CHANGE_WAIT_MS = 50
+
+
+class Actions:
+    DEFAULT_ACTION_PRIORITY = 5
+    TURN_OFF_PRIORITY = 7
