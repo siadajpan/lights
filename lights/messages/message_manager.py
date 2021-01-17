@@ -24,7 +24,7 @@ class MessageManager(Thread):
         self._topic_registered = [message.topic for message in self.messages]
         self.message_queue = message_queue
         self._publish_method = publish_method
-        self._stop = False
+        self._stop_thread = False
 
     def publish(self, topic, payload):
         self._publish_method(topic, payload)
@@ -52,7 +52,7 @@ class MessageManager(Thread):
         raise IncorrectTopicException(error_message)
 
     def run(self) -> None:
-        while not self._stop:
+        while not self._stop_thread:
             message: mqtt.MQTTMessage = self.message_queue.get()
             self.logger.debug(f'Got message topic: {message.topic} '
                               f'payload: {message.payload}')
@@ -64,5 +64,5 @@ class MessageManager(Thread):
                 self.publish(settings.Mqtt.ERROR_TOPIC, ex)
 
     def stop(self):
-        self._stop = True
+        self._stop_thread = True
         self.message_queue.put(Empty())

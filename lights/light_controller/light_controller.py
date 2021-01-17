@@ -21,7 +21,7 @@ class LightController(Thread):
         self._pixels = neopixel.NeoPixel(board.D18, self._led_amount)
         self._logger = logging.getLogger(self.__class__.__name__)
         self._actions_queue = queue.Queue()
-        self._stop = False
+        self._stop_thread = False
         self.executing_priority = 0
 
     def turn_off(self):
@@ -61,7 +61,7 @@ class LightController(Thread):
             self._actions_queue.put(action)
 
     def run(self):
-        while not self._stop:
+        while not self._stop_thread:
             if self._actions_queue.empty():
                 self._logger.debug('Light controller waiting for actions')
                 self.executing_priority = 0
@@ -76,5 +76,5 @@ class LightController(Thread):
             self._actions_queue.get()
 
     def stop(self):
-        self._stop = True
+        self._stop_thread = True
         self._actions_queue.put(EmptyLightAction())
