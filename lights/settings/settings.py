@@ -4,7 +4,7 @@ class Mqtt:
     USERNAME = 'karol'
     PASSWORD = 'klapeczki'
     TOPIC = 'lights/master_bedroom/bed/'
-    ERROR_TOPIC = 'errors/lights'
+    ERROR_TOPIC = 'errors/lights/master_bedroom/bed/'
 
 
 class Messages:
