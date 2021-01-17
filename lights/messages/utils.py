@@ -1,9 +1,11 @@
+import logging
 import math
 from typing import Tuple, Any, List
 
 from lights.errors.developer_exception import DeveloperException
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 
+logger = logging.getLogger('lights_utils')
 
 def evaluate_message(message) -> Any:
     try:
@@ -28,11 +30,13 @@ def check_color_message(message) -> Tuple[int, int, int]:
         error_message = f'Color payload formatted incorrectly, ' \
                         f'expected (uint8, uint8, uint8), ' \
                         f'got {message}'
+        logger.error(error_message)
         raise IncorrectPayloadException(error_message)
     except Exception as ex:
         error_message = f'Checking color payload raised exception ' \
                         f'expected (uint8, uint8, uint8), ' \
                         f'got {message}, exception: {ex}'
+        logger.error(error_message)
         raise IncorrectPayloadException(error_message)
 
 
@@ -50,6 +54,7 @@ def check_color_value_message(message) -> Tuple[Tuple[int, int, int], float]:
         error_message = f'Color-value payload formatted incorrectly, ' \
                         f'expected (uint8, uint8, uint8), float ' \
                         f'got {message}'
+        logger.error(error_message)
         raise IncorrectPayloadException(error_message)
 
 
