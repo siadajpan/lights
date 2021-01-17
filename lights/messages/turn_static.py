@@ -1,3 +1,4 @@
+from lights.light_controller.light_action import LightAction
 from lights.light_controller.light_controller import LightController
 from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage
@@ -14,4 +15,7 @@ class TurnStatic(AbstractMessage):
         self.logger.debug('Checking if color is correctly formatted')
         color = utils.check_color_message(args[0])
         self.logger.debug('Color has correct format')
-        self.light_controller.turn_static_color(color)
+
+        action = LightAction(self.light_controller.turn_static_color, [color])
+
+        self.light_controller.add_action(action)
