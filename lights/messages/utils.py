@@ -15,6 +15,7 @@ def evaluate_message(message) -> Any:
     except SyntaxError:
         error_message = f'Message payload formatted incorrectly, ' \
                         f'got {message}'
+        logger.error(error_message)
         raise IncorrectPayloadException(error_message)
 
 
@@ -94,6 +95,7 @@ def create_colors_change_table(from_colors, to_colors, steps) \
     if len(from_colors) != len(to_colors):
         error_message = f'Creating table of color change. Length of ' \
                         f'from_colors and to_colors are not equal'
+        logger.error(error_message)
         raise DeveloperException(error_message)
 
     colors_list_out = []
