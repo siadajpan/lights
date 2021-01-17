@@ -12,3 +12,6 @@ class LightAction:
             self.method(*self.arguments)
         else:
             self.method()
+
+    def __repr__(self):
+        return f"method: {self.method}, {self.arguments}"

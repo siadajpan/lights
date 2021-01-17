@@ -51,12 +51,11 @@ class LightController(Thread):
         self.add_actions([action])
 
     def add_actions(self, actions: List[LightAction]):
-        if actions[0].priority <= self.executing_priority:
-            self._actions_queue.put(actions)
-        else:
+        if actions[0].priority > self.executing_priority:
             self.empty_queue()
-            for action in actions:
-                self._actions_queue.put(action)
+
+        for action in actions:
+            self._actions_queue.put(action)
 
     def run(self):
         while not self._stop:
