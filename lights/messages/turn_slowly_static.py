@@ -13,7 +13,7 @@ class TurnSlowlyStatic(AbstractMessage):
         self.light_controller = LightController()
 
     def execute(self, *args, **kwargs):
-        self.logger.debug('Executing Turn Slowly Static ssage')
+        self.logger.debug('Executing Turn Slowly Static message')
         color, time_span = utils.check_color_value_message(args[0])
         current_colors = self.light_controller.read_colors()
         steps = int(time_span * 1000 / settings.Lights.SLOW_CHANGE_WAIT_MS)

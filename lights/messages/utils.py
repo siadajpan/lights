@@ -29,6 +29,11 @@ def check_color_message(message) -> Tuple[int, int, int]:
                         f'expected (uint8, uint8, uint8), ' \
                         f'got {message}'
         raise IncorrectPayloadException(error_message)
+    except Exception as ex:
+        error_message = f'Checking color payload raised exception ' \
+                        f'expected (uint8, uint8, uint8), ' \
+                        f'got {message}, exception: {ex}'
+        raise IncorrectPayloadException(error_message)
 
 
 def check_color_value_message(message) -> Tuple[Tuple[int, int, int], float]:

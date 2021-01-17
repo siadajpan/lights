@@ -5,10 +5,10 @@ from lights.errors.incorrect_topic_exception import IncorrectTopicException
 from lights.messages.abstract_message import AbstractMessage
 from lights.messages.turn_off import TurnOff
 from lights.messages.turn_slowly_static import TurnSlowlyStatic
-from lights.messages.turn_static_color import TurnStaticColor
+from lights.messages.turn_static import TurnStatic
 from lights.settings import settings
 
-MESSAGES = [TurnOff(), TurnStaticColor(), TurnSlowlyStatic()]
+MESSAGES = [TurnOff(), TurnStatic(), TurnSlowlyStatic()]
 
 
 class MessageManager:

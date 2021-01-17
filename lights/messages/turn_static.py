@@ -4,7 +4,7 @@ from lights.messages.abstract_message import AbstractMessage
 from lights.settings import settings
 
 
-class TurnStaticColor(AbstractMessage):
+class TurnStatic(AbstractMessage):
     def __init__(self):
         super().__init__()
         self.topic = settings.Mqtt.TOPIC + settings.Messages.TURN_STATIC
