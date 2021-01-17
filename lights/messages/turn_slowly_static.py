@@ -9,11 +9,11 @@ from lights.settings import settings
 class TurnSlowlyStatic(AbstractMessage):
     def __init__(self):
         super().__init__()
-        self.topic = settings.Mqtt.TOPIC + settings.Messages.TURN_OFF
+        self.topic = settings.Mqtt.TOPIC + settings.Messages.TURN_SLOWLY_STATIC
         self.light_controller = LightController()
 
     def execute(self, *args, **kwargs):
-        self.logger.debug('Executing Turn Off message')
+        self.logger.debug('Executing Turn Slowly Static ssage')
         color, time_span = utils.check_color_value_message(args[0])
         current_colors = self.light_controller.read_colors()
         steps = int(time_span / settings.Lights.SLOW_CHANGE_WAIT_MS)
@@ -26,8 +26,3 @@ class TurnSlowlyStatic(AbstractMessage):
         for color_set in zip(*leds_colors):
             self.light_controller.turn_into_colors(list(color_set))
             time.sleep(settings.Lights.SLOW_CHANGE_WAIT_MS)
-
-
-if __name__ == '__main__':
-    ts = TurnSlowlyStatic()
-    ts.execute()
