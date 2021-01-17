@@ -8,6 +8,7 @@ import board
 import neopixel
 from singleton_decorator import singleton
 
+from lights.light_controller.empty_light_action import EmptyLightAction
 from lights.light_controller.light_action import LightAction
 from lights.settings import settings
 
@@ -76,4 +77,4 @@ class LightController(Thread):
 
     def stop(self):
         self._stop = True
-        self._actions_queue.put(LightAction(time.sleep, 0))
+        self._actions_queue.put(EmptyLightAction())
