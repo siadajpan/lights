@@ -81,3 +81,11 @@ def create_colors_change_table(from_colors, to_colors, steps) -> List[List[Tuple
         colors_list_out.append(create_color_change_table(from_color, to_color, steps))
 
     return colors_list_out
+
+if __name__ == '__main__':
+    current_colors = [[0, 0, 0], [0, 0, 0]]
+    color = (120, 240, 1)
+    steps = 3
+    res = create_colors_change_table(
+            current_colors, [color] * len(current_colors), steps)
+    print(res)

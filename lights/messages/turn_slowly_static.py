@@ -21,6 +21,7 @@ class TurnSlowlyStatic(AbstractMessage):
         leds_colors = utils.create_colors_change_table(
             current_colors, [color] * len(current_colors), steps)
         self.logger.debug(f'Changing leds of colors {current_colors} '
+                          f'to {color} in {steps} steps'
                           f'using table {leds_colors}')
 
         for color_set in zip(*leds_colors):
