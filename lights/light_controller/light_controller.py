@@ -48,9 +48,11 @@ class LightController(Thread):
         return eval(str(self._pixels))
 
     def add_action(self, action: LightAction):
+        self._logger.debug(f'Adding action {action} to queue')
         self.add_actions([action])
 
     def add_actions(self, actions: List[LightAction]):
+        self._logger.debug(f'Adding actions {actions} to queue')
         if actions[0].priority > self.executing_priority:
             self.empty_queue()
 
@@ -60,6 +62,7 @@ class LightController(Thread):
     def run(self):
         while not self._stop:
             if self._actions_queue.empty():
+                self._logger.debug('Light controller waiting for actions')
                 self.executing_priority = 0
 
             light_action: LightAction = self._actions_queue.get()
