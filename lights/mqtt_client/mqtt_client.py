@@ -4,6 +4,7 @@ import paho.mqtt.client as mqtt
 
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 from lights.errors.incorrect_topic_exception import IncorrectTopicException
+from lights.errors.lights_exception import LightsException
 from lights.messages.message_manager import MessageManager
 from lights.settings import settings
 
@@ -41,7 +42,7 @@ class MQTTClient:
                          f'{msg.topic}, payload: {msg.payload}')
         try:
             self.message_manager.execute_message(msg.payload, msg.topic)
-        except [IncorrectPayloadException, IncorrectTopicException] as ex:
+        except LightsException as ex:
             self.client.publish(settings.Mqtt.ERROR_TOPIC, ex)
         except Exception as ex:
             self.client.publish(settings.Mqtt.ERROR_TOPIC, ex)
