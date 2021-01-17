@@ -8,4 +8,7 @@ class LightAction:
         self.priority = priority
 
     def execute(self):
-        self.method(*self.arguments)
+        if self.arguments:
+            self.method(*self.arguments)
+        else:
+            self.method()
