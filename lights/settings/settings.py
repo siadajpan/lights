@@ -1,5 +1,5 @@
 class Mqtt:
-    ADDRESS = '192.168.0.201'
+    ADDRESS = '192.168.0.164'
     PORT = 1883
     USERNAME = 'karol'
     PASSWORD = 'klapeczki'
@@ -16,7 +16,7 @@ class Messages:
 
 
 class Lights:
-    LED_AMOUNT = 7
+    LED_AMOUNT = 12
     SLOW_CHANGE_WAIT_MS = 50
 
 
