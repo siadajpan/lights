@@ -39,4 +39,10 @@ class MQTTClient:
         self.message_queue.put(msg)
 
     def publish(self, topic: str, payload: Optional[str]):
-        self.client.publish(topic, payload)
+        self.logger.info(f'Publishing message topic: {topic}, '
+                         f'payload: {payload}')
+        try:
+            self.client.publish(topic, payload)
+        except Exception as ex:
+            self.logger.error(ex)
+

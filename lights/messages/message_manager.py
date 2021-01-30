@@ -27,6 +27,8 @@ class MessageManager(Thread):
         self._stop_thread = False
 
     def publish(self, topic, payload):
+        self._logger.debug(f'Publishing message topic: {topic}, '
+                           f'payload: {payload}')
         self._publish_method(topic, payload)
 
     def execute_message(self, topic: str, payload: str):
