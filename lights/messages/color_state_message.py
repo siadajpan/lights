@@ -2,6 +2,7 @@ from typing import Tuple
 
 from lights.messages.abstract_message import AbstractMessage
 from lights.settings import settings
+import json
 
 
 class ColorStateMessage(AbstractMessage):
@@ -22,11 +23,11 @@ class ColorStateMessage(AbstractMessage):
         state = 'on' if brightness else 'off'
         payload = {
             settings.Messages.STATE: state,
-            settings.Messages.BRIGHTNESS: str(brightness),
-            settings.Messages.COLOR: ','.join(color),
+            settings.Messages.BRIGHTNESS: brightness,
+            settings.Messages.COLOR: color
         }
 
-        return payload
+        return json.dumps(payload)
 
     def execute(self, *args, **kwargs):
         raise NotImplementedError('Color state message doesn\'t have execute '
