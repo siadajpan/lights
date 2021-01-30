@@ -23,7 +23,7 @@ class ColorStateMessage(AbstractMessage):
         payload = {
             settings.Messages.STATE: state,
             settings.Messages.BRIGHTNESS: brightness,
-            settings.Messages.COLOR: color,
+            settings.Messages.COLOR: ','.join(color),
         }
 
         return payload
