@@ -5,6 +5,7 @@ class Mqtt:
     PASSWORD = 'klapeczki'
     TOPIC = 'lights/master_bedroom/bed/'
     ERROR_TOPIC = 'errors/lights/master_bedroom/bed/'
+    STATE_TOPIC = TOPIC + 'state'
 
 
 class Messages:
@@ -13,6 +14,9 @@ class Messages:
     TURN_STATIC = 'turn_static'
     TURN_SLOWLY_STATIC = 'turn_slowly_static'
     EMPTY = 'empty'
+    STATE = 'state'
+    BRIGHTNESS = 'brightness'
+    RGB = 'rgb'
 
 
 class Lights:
