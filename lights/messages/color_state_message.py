@@ -11,7 +11,7 @@ class ColorStateMessage(AbstractMessage):
     """
     def __init__(self, color: Tuple[int, int, int]):
         super().__init__()
-        self.topic = settings.Messages.STATE
+        self.topic = settings.Mqtt.STATE_TOPIC
         self.payload = self._generate_payload(color)
 
     def _generate_payload(self, color):
