@@ -42,6 +42,7 @@ class LightController(Thread):
             self._pixels[i] = color
 
         message = ColorStateMessage(color)
+        self._logger.debug(f'Publishing state message {message}')
         self._publish_method(message.topic, message.payload)
 
     def turn_into_colors(self, colors: List[Tuple[int, int, int]]):

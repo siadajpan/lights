@@ -12,3 +12,6 @@ class AbstractMessage(ABC):
 
     def execute(self, *args, **kwargs):
         raise NotImplementedError()
+
+    def __repr__(self):
+        return f'Message with topic: {self.topic}, payload: {self.payload}'
