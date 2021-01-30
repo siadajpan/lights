@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Dict, Any
 
 from lights.messages.abstract_message import AbstractMessage
 from lights.settings import settings
@@ -29,6 +29,6 @@ class ColorStateMessage(AbstractMessage):
 
         return json.dumps(payload)
 
-    def execute(self, *args, **kwargs):
+    def execute(self, payload: Dict[str, Any]):
         raise NotImplementedError('Color state message doesn\'t have execute '
                                   'method')

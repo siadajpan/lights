@@ -1,3 +1,4 @@
+import json
 import logging
 from queue import Queue
 from threading import Thread
@@ -6,6 +7,7 @@ from typing import List, Callable, Optional
 import paho.mqtt.client as mqtt
 
 from lights.errors.lights_exception import LightsException
+from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage
 from lights.messages.empty import Empty
 from lights.messages.turn_off import TurnOff
@@ -35,14 +37,19 @@ class MessageManager(Thread):
         message = self.check_message(topic)
         if not message:
             return
+
         try:
-            message.execute(payload)
+            payload_dict = utils.payload_from_json(payload)
+            message.execute(payload_dict)
         except Exception as ex:
             self._logger.error(f'Error raised during execution of message. '
                                f'Exception: {ex}')
             raise ex
 
     def check_message(self, topic) -> Optional[AbstractMessage]:
+        """
+        Check if topic is registered and payload is properly formatted
+        """
         self._logger.debug(f'Searching for message topic: {topic}')
         if topic in self._topic_registered:
             return self._messages[self._topic_registered.index(topic)]

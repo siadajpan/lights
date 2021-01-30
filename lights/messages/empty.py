@@ -8,5 +8,5 @@ class Empty(AbstractMessage):
         super().__init__()
         self.topic = settings.Messages.EMPTY
 
-    def execute(self, *args, **kwargs):
+    def execute(self, payload):
         pass

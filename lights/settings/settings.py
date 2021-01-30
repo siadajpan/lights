@@ -14,6 +14,9 @@ class Messages:
     TURN_SLOWLY_STATIC = 'turn_slowly_static'
     EMPTY = 'empty'
     STATE = 'state'
+    TIME_SPAN = 'time_span'
+    ON = 'ON'
+    OFF = 'OFF'
     BRIGHTNESS = 'brightness'
     RGB = 'rgb'
 

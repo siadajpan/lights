@@ -1,5 +1,6 @@
 import logging
 from abc import ABC
+from typing import Dict, Any
 
 from lights.settings import settings
 
@@ -10,7 +11,7 @@ class AbstractMessage(ABC):
         self.payload = ''
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def execute(self, *args, **kwargs):
+    def execute(self, payload: Dict[str, Any]):
         raise NotImplementedError()
 
     def __repr__(self):

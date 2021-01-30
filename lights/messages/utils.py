@@ -1,11 +1,25 @@
+import json
 import logging
 import math
-from typing import Tuple, Any, List
+from typing import Tuple, Any, List, Dict, Optional
 
 from lights.errors.developer_exception import DeveloperException
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 
 logger = logging.getLogger('lights_utils')
+
+
+def payload_from_json(message: Optional[str]) -> Optional[Dict[str, Any]]:
+    if not message:
+        return None
+
+    try:
+        message_dict = json.loads(message)
+        return message_dict
+    except Exception as ex:
+        error_message = f'Received a message that is not json: {message}, {ex}'
+        logger.error(error_message)
+        raise IncorrectPayloadException(error_message)
 
 
 def evaluate_message(message) -> Any:
@@ -22,7 +36,6 @@ def evaluate_message(message) -> Any:
                         f'got {message}, exception: {ex}'
         logger.error(error_message)
         raise IncorrectPayloadException(error_message)
-
 
 
 def check_color_message(message) -> Tuple[int, int, int]:
@@ -43,29 +56,6 @@ def check_color_message(message) -> Tuple[int, int, int]:
     except Exception as ex:
         error_message = f'Checking color payload raised exception ' \
                         f'expected (uint8, uint8, uint8), ' \
-                        f'got {message}, exception: {ex}'
-        logger.error(error_message)
-        raise IncorrectPayloadException(error_message)
-
-
-def check_color_value_message(message) -> Tuple[Tuple[int, int, int], float]:
-    try:
-        message = evaluate_message(message)
-        assert len(message) == 2
-        color = check_color_message(str(message[0]))
-        value = message[1]
-        assert (isinstance(value, float) or isinstance(value, int))
-        assert (value > 0)
-        return color, float(value)
-
-    except AssertionError:
-        error_message = f'Color-value payload formatted incorrectly, ' \
-                        f'expected (uint8, uint8, uint8), float ' \
-                        f'got {message}'
-        logger.error(error_message)
-        raise IncorrectPayloadException(error_message)
-    except Exception as ex:
-        error_message = f'Checking payload evaluation raised exception ' \
                         f'got {message}, exception: {ex}'
         logger.error(error_message)
         raise IncorrectPayloadException(error_message)

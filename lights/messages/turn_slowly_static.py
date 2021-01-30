@@ -1,5 +1,7 @@
 import time
+from typing import Dict, Any
 
+from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 from lights.light_controller.light_action import LightAction
 from lights.light_controller.light_controller import LightController
 from lights.messages import utils
@@ -13,9 +15,18 @@ class TurnSlowlyStatic(AbstractMessage):
         self.topic = settings.Mqtt.TOPIC + settings.Messages.TURN_SLOWLY_STATIC
         self.light_controller = LightController()
 
-    def execute(self, *args, **kwargs):
+    def execute(self, payload: Dict[str, Any]):
         self.logger.debug('Executing Turn Slowly Static message')
-        color, time_span = utils.check_color_value_message(args[0])
+        state = payload.get(settings.Messages.STATE, None)
+        color = payload.get(settings.Messages.RGB, None)
+        time_span = payload.get(settings.Messages.TIME_SPAN, None)
+
+        if state is None or color is None:
+            error_msg = f'Couln\'t read state, color or time span from ' \
+                        f'message {payload}'
+            self.logger.error(error_msg)
+            raise IncorrectPayloadException(error_msg)
+
         current_colors = self.light_controller.read_colors()
         steps = int(time_span * 1000 / settings.Lights.SLOW_CHANGE_WAIT_MS)
         steps = max(steps, 1)
