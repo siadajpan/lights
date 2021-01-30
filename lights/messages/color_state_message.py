@@ -24,7 +24,7 @@ class ColorStateMessage(AbstractMessage):
         payload = {
             settings.Messages.STATE: state,
             settings.Messages.BRIGHTNESS: brightness,
-            settings.Messages.COLOR: color
+            settings.Messages.RGB: color
         }
 
         return json.dumps(payload)
