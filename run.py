@@ -25,6 +25,7 @@ if __name__ == '__main__':
 
     logging.info('Starting message manager')
     message_manager = MessageManager(client.message_queue, client.publish)
+    light_controller.update_publish_method(message_manager.publish)
     message_manager.start()
 
     try:
