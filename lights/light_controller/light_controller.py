@@ -62,13 +62,13 @@ class LightController(Thread):
         self._logger.debug(f'Settings brightness {brightness}')
         curr_brightness = self.read_brightness()
         if curr_brightness == 0:
-            colors = [(1, 1, 1), ] * self._led_amount
+            self._colors = [(1, 1, 1), ] * self._led_amount
             curr_brightness = 1
 
         scale = brightness / curr_brightness
         self._logger.debug(f'Scaling colors by {scale}')
         new_colors = [tuple([int(scale * value) for value in color])
-                      for color in colors]
+                      for color in self._colors]
 
         self.turn_into_colors(new_colors)
 
