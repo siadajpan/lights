@@ -37,6 +37,8 @@ class SetColor(LightAction):
         self._logger.debug(f'Received color: {color_tuple}')
         brightness = self.light_controller.read_brightness()
         self._logger.debug(f'Current brightness: {brightness}')
+        if brightness == 0:
+            brightness = max(color_tuple)
 
         # Change color to fit the current brightness value
         color_tuple = tuple([int(value * brightness / max(color_tuple))
