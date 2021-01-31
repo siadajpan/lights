@@ -27,9 +27,8 @@ class LightController(Thread):
         self._stop_thread = False
         self.executing_priority = 0
         self._publish_method: Optional[Callable[[str, str], None]] = None
-        self._colors: List[Tuple[int, int, int]] = \
-            [(2, 2, 2), ] * self._led_amount
-        self._brightness = 1
+        self._colors: List[Tuple[int, int, int]] = self._pixels
+        self._brightness = self.read_brightness()
 
     def update_publish_method(self, publish_method):
         """
