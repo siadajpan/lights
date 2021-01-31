@@ -42,7 +42,6 @@ class LightController(Thread):
         self.turn_static_color(color=(0, 0, 0))
 
     def turn_on(self):
-        self._default_lights_value = self.read_colors()
         self._logger.info(f'Turning on lights to color: {self._default_lights_value}')
         self.turn_into_colors(self._default_lights_value)
 
