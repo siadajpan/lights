@@ -25,11 +25,11 @@ def payload_from_json(message: Optional[str]) -> Optional[Dict[str, Any]]:
         raise IncorrectPayloadException(error_message)
 
 
-def color_to_json(color: Tuple[int, int, int]):
+def color_to_dict(color: Tuple[int, int, int]):
     dict_color = {}
     for desc, value in zip(settings.Messages.COLOR_VALUES, color):
         dict_color[desc] = value
-    return json.dumps(dict_color)
+    return dict_color
 
 
 def evaluate_message(message) -> Any:
