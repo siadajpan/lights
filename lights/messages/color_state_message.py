@@ -1,5 +1,6 @@
 from typing import Tuple, Dict, Any
 
+from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage
 from lights.settings import settings
 import json
@@ -15,16 +16,16 @@ class ColorStateMessage(AbstractMessage):
         self.topic = settings.Mqtt.STATE_TOPIC
         self.payload = self._generate_payload(color)
 
-    def _generate_payload(self, color):
+    def _generate_payload(self, color: Tuple[int, int, int]):
         """
         Create payload that has state, color and brightness
         """
         brightness = max(color)
-        state = 'on' if brightness else 'off'
+        state = settings.Messages.ON if brightness else settings.Messages.OFF
         payload = {
             settings.Messages.STATE: state,
             settings.Messages.BRIGHTNESS: brightness,
-            settings.Messages.COLOR: color
+            settings.Messages.COLOR: utils.color_to_json(color)
         }
 
         return json.dumps(payload)

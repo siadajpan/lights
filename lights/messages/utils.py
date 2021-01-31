@@ -5,6 +5,7 @@ from typing import Tuple, Any, List, Dict, Optional
 
 from lights.errors.developer_exception import DeveloperException
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
+from lights.settings import settings
 
 logger = logging.getLogger('lights_utils')
 
@@ -22,6 +23,13 @@ def payload_from_json(message: Optional[str]) -> Optional[Dict[str, Any]]:
         error_message = f'Received a message that is not json: {message}, {ex}'
         logger.error(error_message)
         raise IncorrectPayloadException(error_message)
+
+
+def color_to_json(color: Tuple[int, int, int]):
+    dict_color = {}
+    for desc, value in zip(settings.Messages.COLOR_VALUES, color):
+        dict_color[desc] = value
+    return json.dumps(dict_color)
 
 
 def evaluate_message(message) -> Any:

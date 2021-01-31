@@ -22,7 +22,7 @@ class Messages:
     R = 'r'
     G = 'g'
     B = 'b'
-
+    COLOR_VALUES = [R, G, B]
 
 class Lights:
     LED_AMOUNT = 12
