@@ -16,27 +16,30 @@ class SetColor(LightAction):
         Check if payload is type
         {
             'state': 'ON',
-            'brightness': int, [optional]
             'color': {'r': int, 'g': int, 'b': int}
         }
         :raises: IncorrectPayloadException if state, brightness or color have
         wrong value
         """
         has_state = utils.message_has_state(payload)
-        has_brightness = utils.message_has_brightness(payload)
         has_color = utils.message_has_color(payload)
-        keys = payload.keys()
 
         if not has_state or not has_color:
             return False
-        if sum([has_state, has_color, has_brightness]) != len(keys):
+        if sum([has_state, has_color]) != 2:
+            return False
+        if payload[settings.Messages.STATE] == settings.Messages.OFF:
             return False
 
-        if payload[settings.Messages.STATE] == settings.Messages.ON:
-            color = payload.get(settings.Messages.COLOR)
-            self.arguments = [utils.color_message_to_tuple(color)]
-            self._logger.debug(f'Updating set color arguments to '
-                               f'{self.arguments}')
-            return True
+        self._logger('Received payload that fits to set color action')
+        color = payload.get(settings.Messages.COLOR)
+        color_tuple = utils.color_message_to_tuple(color)
+        brightness = self.light_controller.read_brightness()
 
-        return False
+        # Change color to fit the current brightness value
+        color_tuple = tuple([int(value * brightness / max(value))
+                             for value in color_tuple])
+        self.arguments = [color_tuple]
+        self._logger.debug(f'Updating set color arguments to '
+                           f'{self.arguments}')
+        return True
