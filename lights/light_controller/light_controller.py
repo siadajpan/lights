@@ -11,6 +11,7 @@ from singleton_decorator import singleton
 
 from lights.actions.empty_light_action import EmptyLightAction
 from lights.actions.light_action import LightAction
+from lights.messages import utils
 from lights.messages.color_state_message import ColorStateMessage
 from lights.settings import settings
 
@@ -26,8 +27,9 @@ class LightController(Thread):
         self._stop_thread = False
         self.executing_priority = 0
         self._publish_method: Optional[Callable[[str, str], None]] = None
-        self._default_lights_value: List[Tuple[int, int, int]] = \
+        self._colors: List[Tuple[int, int, int]] = \
             [(1, 1, 1), ] * self._led_amount
+        self._brightness = 1
 
     def update_publish_method(self, publish_method):
         """
@@ -36,40 +38,38 @@ class LightController(Thread):
         self._publish_method = publish_method
 
     def turn_off(self):
-        self._default_lights_value = self.read_colors()
+        self._colors = self.read_colors()
         self._logger.info(f'Turning off lights, saving lights state: '
-                          f'{self._default_lights_value}')
+                          f'{self._colors}')
         self.turn_static_color(color=(0, 0, 0))
 
     def turn_on(self):
         self._logger.info(
-            f'Turning on lights to color: {self._default_lights_value}')
-        self.turn_into_colors(self._default_lights_value)
+            f'Turning on lights to color: {self._colors}')
+        self.turn_into_colors(self._colors)
 
     def turn_static_color(self, color: Tuple[int, int, int]):
-        for i in range(self._led_amount):
-            self._pixels[i] = color
+        self.turn_into_colors([color, ] * self._led_amount)
 
-        message = ColorStateMessage(color)
-        self._logger.debug(f'Publishing state message {message}')
-        self._publish_method(message.topic, message.payload)
+    def read_brightness(self):
+        max_value = max([max(values) for values in self._colors])
+        return max_value
 
     def set_brightness(self, brightness: int):
         """
         Update colors of pixels to change brightness
         """
         self._logger.debug(f'Settings brightness {brightness}')
-        colors = self.read_colors()
-        self._logger.debug(f'Current colors: {colors}')
-        max_value = max([max(values) for values in colors])
-        if max_value == 0:
+        curr_brightness = self.read_brightness()
+        if curr_brightness == 0:
             colors = [(1, 1, 1), ] * self._led_amount
-            max_value = 1
+            curr_brightness = 1
 
-        scale = brightness / max_value
+        scale = brightness / curr_brightness
         self._logger.debug(f'Scaling colors by {scale}')
         new_colors = [tuple([int(scale * value) for value in color])
                       for color in colors]
+
         self.turn_into_colors(new_colors)
 
     def turn_into_colors(self, colors: List[Tuple[int, int, int]]):
@@ -77,8 +77,11 @@ class LightController(Thread):
         for i, color in enumerate(colors):
             self._pixels[i] = color
 
+        self._colors = self._pixels
+        self._brightness = self.read_brightness()
+
         mean_color = tuple([int(statistics.mean(values))
-                            for values in zip(*colors)])
+                            for values in zip(*self._colors)])
         assert len(mean_color) == 3
         message = ColorStateMessage(mean_color)
         self._publish_method(message.topic, message.payload)
