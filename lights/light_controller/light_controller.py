@@ -28,7 +28,7 @@ class LightController(Thread):
         self.executing_priority = 0
         self._publish_method: Optional[Callable[[str, str], None]] = None
         self._colors: List[Tuple[int, int, int]] = \
-            [(1, 1, 1), ] * self._led_amount
+            [(2, 2, 2), ] * self._led_amount
         self._brightness = 1
 
     def update_publish_method(self, publish_method):
@@ -49,6 +49,7 @@ class LightController(Thread):
         self.turn_into_colors(self._colors)
 
     def turn_static_color(self, color: Tuple[int, int, int]):
+        self._logger.debug(f'Turning into static color: {color}')
         self.turn_into_colors([color, ] * self._led_amount)
 
     def read_brightness(self):
@@ -62,8 +63,8 @@ class LightController(Thread):
         self._logger.debug(f'Settings brightness {brightness}')
         curr_brightness = self.read_brightness()
         if curr_brightness == 0:
-            self._colors = [(1, 1, 1), ] * self._led_amount
-            curr_brightness = 1
+            self._colors = [(2, 2, 2), ] * self._led_amount
+            curr_brightness = 2
 
         scale = brightness / curr_brightness
         self._logger.debug(f'Scaling colors by {scale}')
