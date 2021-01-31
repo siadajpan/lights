@@ -36,14 +36,8 @@ class SetColor(LightAction):
         color_tuple = utils.color_message_to_tuple(color)
         self._logger.debug(f'Received color: {color_tuple}')
         brightness = self.light_controller.read_brightness()
-        self._logger.debug(f'Current brightness: {brightness}')
-        if brightness == 0:
-            brightness = max(color_tuple)
 
-        # Change color to fit the current brightness value
-        color_tuple = tuple([int(value * brightness / max(color_tuple))
-                             for value in color_tuple])
-        self.arguments = [color_tuple]
+        self.arguments = [color_tuple, brightness]
         self._logger.debug(f'Updating set color arguments to '
                            f'{self.arguments}')
         return True

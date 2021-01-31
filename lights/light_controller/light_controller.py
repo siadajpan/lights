@@ -11,7 +11,6 @@ from singleton_decorator import singleton
 
 from lights.actions.empty_light_action import EmptyLightAction
 from lights.actions.light_action import LightAction
-from lights.messages import utils
 from lights.messages.color_state_message import ColorStateMessage
 from lights.settings import settings
 
@@ -29,6 +28,11 @@ class LightController(Thread):
         self._publish_method: Optional[Callable[[str, str], None]] = None
         self._colors: List[Tuple[int, int, int]] = self._pixels
         self._brightness = self.read_brightness()
+        self._state = self._initialize_state()
+
+    def _initialize_state(self):
+        return settings.Messages.ON if self._brightness \
+            else settings.Messages.OFF
 
     def update_publish_method(self, publish_method):
         """
@@ -37,22 +41,26 @@ class LightController(Thread):
         self._publish_method = publish_method
 
     def turn_off(self):
-        self._colors = self.read_colors()
+        self._state = settings.Messages.OFF
         self._logger.info(f'Turning off lights, saving lights state: '
                           f'{self._colors}')
-        self.turn_static_color(color=(0, 0, 0))
+        self.turn_into_colors(self._colors, self._brightness)
 
     def turn_on(self):
+        if self._brightness == 0:
+            self._brightness = 255
+
+        self._state = settings.Messages.ON
         self._logger.info(
             f'Turning on lights to color: {self._colors}')
-        self.turn_into_colors(self._colors)
+        self.turn_into_colors(self._colors, self._brightness)
 
-    def turn_static_color(self, color: Tuple[int, int, int]):
+    def turn_static_color(self, color: Tuple[int, int, int], brightness: int):
         self._logger.debug(f'Turning into static color: {color}')
-        self.turn_into_colors([color, ] * self._led_amount)
+        self.turn_into_colors([color, ] * self._led_amount, brightness)
 
     def read_brightness(self):
-        max_value = max([max(values) for values in self._colors])
+        max_value = max([max(values) for values in self._pixels])
         return max_value
 
     def set_brightness(self, brightness: int):
@@ -60,35 +68,34 @@ class LightController(Thread):
         Update colors of pixels to change brightness
         """
         self._logger.debug(f'Settings brightness {brightness}')
-        curr_brightness = self.read_brightness()
-        if curr_brightness == 0:
-            self._colors = [(2, 2, 2), ] * self._led_amount
-            curr_brightness = 2
+        self._state = settings.Messages.ON
+        self.turn_into_colors(self._colors, brightness)
 
-        scale = brightness / curr_brightness
-        self._logger.debug(f'Scaling colors by {scale}')
-        new_colors = [tuple([int(scale * value) for value in color])
-                      for color in self._colors]
-
-        self.turn_into_colors(new_colors)
-
-    def turn_into_colors(self, colors: List[Tuple[int, int, int]]):
+    def turn_into_colors(self, colors: List[Tuple[int, int, int]],
+                         brightness: int):
         self._logger.debug(f'Turning into colors: {colors}')
-        for i, color in enumerate(colors):
-            self._pixels[i] = color
-
-        self._colors = self._pixels
-        self._brightness = self.read_brightness()
+        self._colors = colors
+        self._brightness = brightness
 
         mean_color = tuple([int(statistics.mean(values))
                             for values in zip(*self._colors)])
         assert len(mean_color) == 3
-        message = ColorStateMessage(mean_color)
+
+        # when state is OFF, set pixels to (0, 0, 0), but send state with the
+        # colors and brightness values that were already there
+        if self._state == settings.Messages.OFF:
+            colors = [(0, 0, 0), ] * self._led_amount
+
+        for i, color in enumerate(colors):
+            self._pixels[i] = [int(value * brightness / 255)
+                               for value in color]
+
+        message = ColorStateMessage(mean_color, brightness, self._state)
         self._publish_method(message.topic, message.payload)
 
-    def turn_into_colors_and_wait(self, colors, time_span):
+    def turn_into_colors_and_wait(self, colors, brightness, time_span):
         start_time = time.time()
-        self.turn_into_colors(colors)
+        self.turn_into_colors(colors, brightness)
         light_turning_time = time.time() - start_time
         wait_time = time_span - light_turning_time
         if wait_time > 0:

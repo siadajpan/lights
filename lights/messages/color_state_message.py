@@ -11,17 +11,16 @@ class ColorStateMessage(AbstractMessage):
     Message that is used for status update. Color and brightness status
     are sent on each light switch
     """
-    def __init__(self, color: Tuple[int, int, int]):
+    def __init__(self, color: Tuple[int, int, int], brightness, state: str):
         super().__init__()
         self.topic = settings.Mqtt.STATE_TOPIC
-        self.payload = self._generate_payload(color)
+        self.payload = self._generate_payload(color, brightness, state)
 
-    def _generate_payload(self, color: Tuple[int, int, int]):
+    def _generate_payload(self, color: Tuple[int, int, int], brightness: int,
+                          state: str):
         """
         Create payload that has state, color and brightness
         """
-        brightness = max(color)
-        state = settings.Messages.ON if brightness else settings.Messages.OFF
         payload = {
             settings.Messages.STATE: state,
             settings.Messages.BRIGHTNESS: brightness,
