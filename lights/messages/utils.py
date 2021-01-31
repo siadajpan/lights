@@ -37,7 +37,7 @@ def message_has_state(message: Dict[str, Any]) -> bool:
     if not state:
         return False
 
-    if state not in [settings.Messages.STATE_VALUES]:
+    if state not in settings.Messages.STATE_VALUES:
         msg = f'Expected state within {settings.Messages.STATE_VALUES}, ' \
               f'got: {state}'
         logger.error(msg)
