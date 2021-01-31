@@ -23,6 +23,8 @@ class Messages:
     G = 'g'
     B = 'b'
     COLOR_VALUES = [R, G, B]
+    STATE_VALUES = [ON, OFF]
+
 
 class Lights:
     LED_AMOUNT = 12

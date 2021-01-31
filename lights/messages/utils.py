@@ -32,27 +32,62 @@ def color_to_dict(color: Tuple[int, int, int]):
     return dict_color
 
 
-def evaluate_message(message) -> Any:
+def message_has_state(message: Dict[str, Any]) -> bool:
+    state = message.get(settings.Messages.STATE, None)
+    if not state:
+        return False
+
+    if state not in [settings.Messages.STATE_VALUES]:
+        msg = f'Expected state within {settings.Messages.STATE_VALUES}, ' \
+              f'got: {state}'
+        logger.error(msg)
+        raise IncorrectPayloadException(msg)
+
+    return True
+
+
+def message_has_color(message: Dict[str, Any]) -> bool:
+    color = message.get(settings.Messages.COLOR, None)
+    if not color:
+        return False
+
+    if not check_color_message(color):
+        msg = f'Expected state within {settings.Messages.STATE_VALUES}, ' \
+              f'got: {color}'
+        logger.error(msg)
+        raise IncorrectPayloadException(msg)
+
+    return True
+
+
+def message_has_brightness(message: Dict[str, Any]) -> bool:
+    brightness = message.get(settings.Messages.BRIGHTNESS, None)
+    if not brightness:
+        return False
+
     try:
-        message = eval(message)
-        return message
-    except SyntaxError:
-        error_message = f'Message payload formatted incorrectly, ' \
-                        f'got {message}'
-        logger.error(error_message)
-        raise IncorrectPayloadException(error_message)
-    except Exception as ex:
-        error_message = f'Checking color payload raised exception ' \
-                        f'got {message}, exception: {ex}'
-        logger.error(error_message)
-        raise IncorrectPayloadException(error_message)
+        assert isinstance(brightness, int)
+        assert 0 <= brightness
+    except AssertionError:
+        msg = f'Expected brightness as int greater or equal 0, ' \
+              f'got: {brightness}'
+        logger.error(msg)
+        raise IncorrectPayloadException(msg)
+
+    return True
 
 
-def check_color_message(message: Dict[str, Any]) -> Tuple[int, int, int]:
+def color_message_to_tuple(message: Dict[str, Any]) -> Tuple[int, int, int]:
     r = message.get(settings.Messages.R, None)
     g = message.get(settings.Messages.G, None)
     b = message.get(settings.Messages.B, None)
     message_tuple = (r, g, b)
+
+    return message_tuple
+
+
+def check_color_message(message: Dict[str, Any]) -> Tuple[int, int, int]:
+    message_tuple = color_message_to_tuple(message)
     try:
         for el in message_tuple:
             assert isinstance(el, int)

@@ -9,8 +9,8 @@ import board
 import neopixel
 from singleton_decorator import singleton
 
-from lights.light_controller.empty_light_action import EmptyLightAction
-from lights.light_controller.light_action import LightAction
+from lights.actions.empty_light_action import EmptyLightAction
+from lights.actions.light_action import LightAction
 from lights.messages.color_state_message import ColorStateMessage
 from lights.settings import settings
 
@@ -42,7 +42,8 @@ class LightController(Thread):
         self.turn_static_color(color=(0, 0, 0))
 
     def turn_on(self):
-        self._logger.info(f'Turning on lights to color: {self._default_lights_value}')
+        self._logger.info(
+            f'Turning on lights to color: {self._default_lights_value}')
         self.turn_into_colors(self._default_lights_value)
 
     def turn_static_color(self, color: Tuple[int, int, int]):
@@ -52,6 +53,22 @@ class LightController(Thread):
         message = ColorStateMessage(color)
         self._logger.debug(f'Publishing state message {message}')
         self._publish_method(message.topic, message.payload)
+
+    def set_brightness(self, brightness: int):
+        """
+        Update colors of pixels to change brightness
+        """
+        colors = self.read_colors()
+        max_value = max([max(values) for values in colors])
+        if max_value == 0:
+            colors = [(1, 1, 1), ] * self._led_amount
+            max_value = 1
+
+        scale = brightness / max_value
+        new_colors = [tuple([int(scale * value) for value in color])
+                      for color in colors]
+
+        self.turn_into_colors(new_colors)
 
     def turn_into_colors(self, colors: List[Tuple[int, int, int]]):
         for i, color in enumerate(colors):

@@ -1,4 +1,3 @@
-import json
 import logging
 from queue import Queue
 from threading import Thread
@@ -10,12 +9,11 @@ from lights.errors.lights_exception import LightsException
 from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage
 from lights.messages.empty import Empty
-from lights.messages.turn_off import TurnOff
 from lights.messages.turn_slowly_static import TurnSlowlyStatic
 from lights.messages.turn_static import TurnStatic
 from lights.settings import settings
 
-MESSAGES = [TurnOff(), TurnStatic(), TurnSlowlyStatic(), Empty()]
+MESSAGES = [TurnStatic(), TurnSlowlyStatic(), Empty()]
 
 
 class MessageManager(Thread):

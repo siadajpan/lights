@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 
 class LightAction:
@@ -15,3 +15,6 @@ class LightAction:
 
     def __repr__(self):
         return f"LightAction: method: {self.method}, arguments: {self.arguments}"
+
+    def evaluate_payload(self, payload: Dict[str, Any]) -> bool:
+        raise NotImplementedError

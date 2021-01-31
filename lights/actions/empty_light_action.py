@@ -1,6 +1,6 @@
 import time
 
-from lights.light_controller.light_action import LightAction
+from lights.actions.light_action import LightAction
 
 
 class EmptyLightAction(LightAction):

@@ -1,8 +1,7 @@
-import time
 from typing import Dict, Any
 
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
-from lights.light_controller.light_action import LightAction
+from lights.actions.light_action import LightAction
 from lights.light_controller.light_controller import LightController
 from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage
