@@ -37,12 +37,13 @@ class LightController(Thread):
 
     def turn_off(self):
         self._default_lights_value = self.read_colors()
-        self._logger.info('Turning off lights')
+        self._logger.info(f'Turning off lights, saving lights state: '
+                          f'{self._default_lights_value}')
         self.turn_static_color(color=(0, 0, 0))
 
     def turn_on(self):
         self._default_lights_value = self.read_colors()
-        self._logger.info('Turning on lights')
+        self._logger.info(f'Turning on lights to color: {self._default_lights_value}')
         self.turn_into_colors(self._default_lights_value)
 
     def turn_static_color(self, color: Tuple[int, int, int]):
