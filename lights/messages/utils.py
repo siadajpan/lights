@@ -48,25 +48,27 @@ def evaluate_message(message) -> Any:
         raise IncorrectPayloadException(error_message)
 
 
-def check_color_message(message) -> Tuple[int, int, int]:
+def check_color_message(message: Dict[str, Any]) -> Tuple[int, int, int]:
+    r = message.get(settings.Messages.R, None)
+    g = message.get(settings.Messages.G, None)
+    b = message.get(settings.Messages.B, None)
+    message_tuple = (r, g, b)
     try:
-        message = evaluate_message(message)
-        assert isinstance(message, tuple)
-        for el in message:
+        for el in message_tuple:
             assert isinstance(el, int)
             assert 0 <= el <= 255
 
-        return message
+        return message_tuple
     except AssertionError:
         error_message = f'Color payload formatted incorrectly, ' \
-                        f'expected (uint8, uint8, uint8), ' \
-                        f'got {message}'
+                        'expected {\'r\': uint8, \'g\': uint8, \'b\': ' \
+                        f'uint8), got {message}'
         logger.error(error_message)
         raise IncorrectPayloadException(error_message)
     except Exception as ex:
         error_message = f'Checking color payload raised exception ' \
-                        f'expected (uint8, uint8, uint8), ' \
-                        f'got {message}, exception: {ex}'
+                        'expected {\'r\': uint8, \'g\': uint8, \'b\': ' \
+                        f'uint8), got {message}, exception: {ex}'
         logger.error(error_message)
         raise IncorrectPayloadException(error_message)
 
