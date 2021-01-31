@@ -22,7 +22,6 @@ class SetColor(LightAction):
         :raises: IncorrectPayloadException if state, brightness or color have
         wrong value
         """
-        self._logger
         has_state = utils.message_has_state(payload)
         has_brightness = utils.message_has_brightness(payload)
         has_color = utils.message_has_color(payload)
@@ -36,6 +35,8 @@ class SetColor(LightAction):
         if payload[settings.Messages.STATE] == settings.Messages.ON:
             color = payload.get(settings.Messages.COLOR)
             self.arguments = utils.color_message_to_tuple(color)
+            self._logger.debug(f'Updating set color arguments to '
+                               f'{self.arguments}')
             return True
 
         return False
