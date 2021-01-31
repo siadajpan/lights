@@ -32,6 +32,8 @@ class MQTTClient:
         topic = settings.Mqtt.TOPIC + '#'
         self.logger.info(f'Subscribing to {topic}')
         self.client.subscribe(topic)
+        self.logger.info(f'Unsubscribing {settings.Mqtt.STATE_TOPIC}')
+        self.client.unsubscribe(settings.Mqtt.STATE_TOPIC)
 
     def on_message(self, client, userdata, msg):
         self.logger.info(f'Message received topic: '
