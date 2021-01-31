@@ -58,19 +58,22 @@ class LightController(Thread):
         """
         Update colors of pixels to change brightness
         """
+        self._logger.debug(f'Settings brightness {brightness}')
         colors = self.read_colors()
+        self._logger.debug(f'Current colors: {colors}')
         max_value = max([max(values) for values in colors])
         if max_value == 0:
             colors = [(1, 1, 1), ] * self._led_amount
             max_value = 1
 
         scale = brightness / max_value
+        self._logger.debug(f'Scaling colors by {scale}')
         new_colors = [tuple([int(scale * value) for value in color])
                       for color in colors]
-
         self.turn_into_colors(new_colors)
 
     def turn_into_colors(self, colors: List[Tuple[int, int, int]]):
+        self._logger.debug(f'Turning into colors: {colors}')
         for i, color in enumerate(colors):
             self._pixels[i] = color
 
