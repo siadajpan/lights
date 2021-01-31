@@ -37,7 +37,7 @@ class MQTTClient:
 
     def on_message(self, client, userdata, msg):
         self.logger.info(f'Message received topic: '
-                         f'{msg.topic}, payload: {msg.payload}')
+                         f'{msg.topic}, payload: {msg._payload}')
         self.message_queue.put(msg)
 
     def publish(self, topic: str, payload: Optional[str]):

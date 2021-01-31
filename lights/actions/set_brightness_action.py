@@ -10,7 +10,7 @@ class SetBrightness(LightAction):
     def __init__(self):
         self.light_controller = LightController()
         super().__init__(method=self.light_controller.set_brightness)
-        self.payload = None
+        self._payload = None
 
     def evaluate_payload(self, payload: Dict[str, Any]) -> bool:
         """
@@ -18,7 +18,6 @@ class SetBrightness(LightAction):
         :raises: IncorrectPayloadException if state or brightness have wrong
         value
         """
-        self.payload = payload
         has_state = utils.message_has_state(payload)
         has_brightness = utils.message_has_brightness(payload)
         keys = payload.keys()
@@ -27,12 +26,13 @@ class SetBrightness(LightAction):
             return False
 
         if payload[settings.Messages.STATE] == settings.Messages.ON:
+            self._payload = payload
             self.arguments = [payload.get(settings.Messages.BRIGHTNESS)]
             return True
 
         return False
 
     def execute(self):
-        state = self.payload.get(settings.Messages.STATE)
+        state = self._payload.get(settings.Messages.STATE)
         self.light_controller.update_state(state)
         super().execute()

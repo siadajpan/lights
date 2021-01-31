@@ -10,7 +10,7 @@ class SetColor(LightAction):
     def __init__(self):
         self.light_controller = LightController()
         super().__init__(method=self.light_controller.turn_static_color)
-        self.payload = None
+        self._payload = None
 
     def evaluate_payload(self, payload: Dict[str, Any]) -> bool:
         """
@@ -41,8 +41,9 @@ class SetColor(LightAction):
         self.arguments = [color_tuple, brightness]
         self._logger.debug(f'Updating set color arguments to '
                            f'{self.arguments}')
+        self._payload = payload
         return True
 
     def execute(self):
-        state = self.payload.get(settings.Messages.STATE)
+        state = self._payload.get(settings.Messages.STATE)
         self.light_controller.update_state(state)
