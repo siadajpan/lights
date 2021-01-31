@@ -72,7 +72,8 @@ class LightController(Thread):
 
     def turn_into_colors(self, colors: List[Tuple[int, int, int]],
                          brightness: int):
-        self._logger.debug(f'Turning into colors: {colors}')
+        self._logger.debug(f'Turning into colors: {colors}, '
+                           f'brightness: {brightness}')
         self._colors = colors
         self._brightness = brightness
 
@@ -86,7 +87,7 @@ class LightController(Thread):
             colors = [(0, 0, 0), ] * self._led_amount
 
         for i, color in enumerate(colors):
-            self._pixels[i] = [int(value * brightness / 255)
+            self._pixels[i] = [int(value * brightness / max(color + [1]))
                                for value in color]
 
         message = ColorStateMessage(mean_color, brightness, self._state)
