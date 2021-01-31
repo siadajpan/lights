@@ -40,17 +40,17 @@ class LightController(Thread):
         """
         self._publish_method = publish_method
 
+    def update_state(self, state: str):
+        self._state = state
+
     def turn_off(self):
-        self._state = settings.Messages.OFF
+        self.update_state(settings.Messages.OFF)
         self._logger.info(f'Turning off lights, saving lights state: '
                           f'{self._colors}')
         self.turn_into_colors(self._colors, self._brightness)
 
     def turn_on(self):
-        if self._brightness == 0:
-            self._brightness = 255
-
-        self._state = settings.Messages.ON
+        self.update_state(settings.Messages.ON)
         self._logger.info(
             f'Turning on lights to color: {self._colors}')
         self.turn_into_colors(self._colors, self._brightness)
@@ -68,7 +68,6 @@ class LightController(Thread):
         Update colors of pixels to change brightness
         """
         self._logger.debug(f'Settings brightness {brightness}')
-        self._state = settings.Messages.ON
         self.turn_into_colors(self._colors, brightness)
 
     def turn_into_colors(self, colors: List[Tuple[int, int, int]],
