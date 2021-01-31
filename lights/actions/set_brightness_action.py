@@ -25,7 +25,7 @@ class SetBrightness(LightAction):
             return False
 
         if payload[settings.Messages.STATE] == settings.Messages.ON:
-            self.arguments = payload.get(settings.Messages.BRIGHTNESS)
+            self.arguments = [payload.get(settings.Messages.BRIGHTNESS)]
             return True
 
         return False

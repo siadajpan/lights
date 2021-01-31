@@ -34,7 +34,7 @@ class SetColor(LightAction):
 
         if payload[settings.Messages.STATE] == settings.Messages.ON:
             color = payload.get(settings.Messages.COLOR)
-            self.arguments = utils.color_message_to_tuple(color)
+            self.arguments = [utils.color_message_to_tuple(color)]
             self._logger.debug(f'Updating set color arguments to '
                                f'{self.arguments}')
             return True
