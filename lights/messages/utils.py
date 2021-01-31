@@ -108,17 +108,22 @@ def check_color_message(message: Dict[str, Any]) -> Tuple[int, int, int]:
         raise IncorrectPayloadException(error_message)
 
 
-def create_color_change_table(from_color, to_color, steps) \
-        -> List[Tuple[int, int, int]]:
+def create_value_change_table(from_value, to_value, steps):
     # list 0-1 of multipliers length of steps
     change_table = [- 0.5 * math.cos(x / (steps - 1) * math.pi) + 0.5 for x in
                     range(steps)]
+    value_change = to_value - from_value
+    change_table = [int(x * value_change + from_value) for x in change_table]
 
+    return change_table
+
+
+def create_color_change_table(from_color, to_color, steps) \
+        -> List[Tuple[int, int, int]]:
     values_out = []
     for from_value, to_value in zip(from_color, to_color):
-        value_change = to_value - from_value
-        values_out.append(
-            [int(x * value_change + from_value) for x in change_table])
+        change_table = create_value_change_table(from_value, to_value, steps)
+        values_out.append(change_table)
 
     colors_out = [(r, g, b) for r, g, b in zip(*values_out)]
 

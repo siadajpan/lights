@@ -18,6 +18,7 @@ class TurnSlowlyStatic(AbstractMessage):
         self.logger.debug('Executing Turn Slowly Static message')
         state = payload.get(settings.Messages.STATE, None)
         color = payload.get(settings.Messages.COLOR, None)
+        brightness = payload.get(settings.Messages.BRIGHTNESS, None)
         time_span = payload.get(settings.Messages.TIME_SPAN, None)
 
         if state is None or color is None:
@@ -35,12 +36,18 @@ class TurnSlowlyStatic(AbstractMessage):
             current_colors, [color] * len(current_colors), steps)
         self.logger.debug(f'Changing leds of colors {current_colors} '
                           f'to {color} in {steps} steps')
+        color_sets = list(zip(*leds_colors))
+
+        current_brightness = self.light_controller.read_brightness()
+        brightness_changes = utils.create_value_change_table(
+            current_brightness, brightness, steps)
 
         actions = []
-        for color_set in zip(*leds_colors):
+        for color_set, brightness in zip(color_sets, brightness_changes):
             action = LightAction(
                 self.light_controller.turn_into_colors_and_wait,
-                args=[color_set, settings.Lights.SLOW_CHANGE_WAIT_MS / 1000]
+                args=[color_set, brightness,
+                      settings.Lights.SLOW_CHANGE_WAIT_MS / 1000]
             )
             actions.append(action)
 
