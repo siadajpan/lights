@@ -31,13 +31,15 @@ class SetColor(LightAction):
         if payload[settings.Messages.STATE] == settings.Messages.OFF:
             return False
 
-        self._logger('Received payload that fits to set color action')
+        self._logger.debug('Received payload that fits to set color action')
         color = payload.get(settings.Messages.COLOR)
         color_tuple = utils.color_message_to_tuple(color)
+        self._logger.debug(f'Received color: {color_tuple}')
         brightness = self.light_controller.read_brightness()
+        self._logger.debug(f'Current brightness: {brightness}')
 
         # Change color to fit the current brightness value
-        color_tuple = tuple([int(value * brightness / max(value))
+        color_tuple = tuple([int(value * brightness / max(color_tuple))
                              for value in color_tuple])
         self.arguments = [color_tuple]
         self._logger.debug(f'Updating set color arguments to '
