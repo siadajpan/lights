@@ -30,6 +30,9 @@ class LightController(Thread):
         self._brightness = self.read_brightness()
         self._state = self._initialize_state()
 
+    def get_brightness(self):
+        return self._brightness
+
     def _initialize_state(self):
         return settings.Messages.ON if self._brightness \
             else settings.Messages.OFF
