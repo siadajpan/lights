@@ -14,4 +14,4 @@ class LightAction:
             self.method()
 
     def __repr__(self):
-        return f"method: {self.method}, {self.arguments}"
+        return f"LightAction: method: {self.method}, arguments: {self.arguments}"

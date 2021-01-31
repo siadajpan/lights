@@ -18,7 +18,7 @@ class TurnSlowlyStatic(AbstractMessage):
     def execute(self, payload: Dict[str, Any]):
         self.logger.debug('Executing Turn Slowly Static message')
         state = payload.get(settings.Messages.STATE, None)
-        color = payload.get(settings.Messages.RGB, None)
+        color = payload.get(settings.Messages.COLOR, None)
         time_span = payload.get(settings.Messages.TIME_SPAN, None)
 
         if state is None or color is None:

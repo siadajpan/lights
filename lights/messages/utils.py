@@ -14,7 +14,9 @@ def payload_from_json(message: Optional[str]) -> Optional[Dict[str, Any]]:
         return None
 
     try:
+        logger.debug(f'Loading message into dict {message}')
         message_dict = json.loads(message)
+        logger.debug(f'Message loaded {message_dict}')
         return message_dict
     except Exception as ex:
         error_message = f'Received a message that is not json: {message}, {ex}'

@@ -26,6 +26,8 @@ class LightController(Thread):
         self._stop_thread = False
         self.executing_priority = 0
         self._publish_method: Optional[Callable[[str, str], None]] = None
+        self._default_lights_value: List[Tuple[int, int, int]] = \
+            [(1, 1, 1), ] * self._led_amount
 
     def update_publish_method(self, publish_method):
         """
@@ -34,8 +36,14 @@ class LightController(Thread):
         self._publish_method = publish_method
 
     def turn_off(self):
+        self._default_lights_value = self.read_colors()
         self._logger.info('Turning off lights')
         self.turn_static_color(color=(0, 0, 0))
+
+    def turn_on(self):
+        self._default_lights_value = self.read_colors()
+        self._logger.info('Turning on lights')
+        self.turn_into_colors(self._default_lights_value)
 
     def turn_static_color(self, color: Tuple[int, int, int]):
         for i in range(self._led_amount):
@@ -51,6 +59,7 @@ class LightController(Thread):
 
         mean_color = tuple([int(statistics.mean(values))
                             for values in zip(*colors)])
+        assert len(mean_color) == 3
         message = ColorStateMessage(mean_color)
         self._publish_method(message.topic, message.payload)
 

@@ -18,7 +18,10 @@ class Messages:
     ON = 'ON'
     OFF = 'OFF'
     BRIGHTNESS = 'brightness'
-    RGB = 'rgb'
+    COLOR = 'color'
+    R = 'r'
+    G = 'g'
+    B = 'b'
 
 
 class Lights:
