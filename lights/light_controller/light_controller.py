@@ -87,7 +87,7 @@ class LightController(Thread):
             colors = [(0, 0, 0), ] * self._led_amount
 
         for i, color in enumerate(colors):
-            self._pixels[i] = [int(value * brightness / max(color + [1]))
+            self._pixels[i] = [int(value * brightness / max(list(color) + [1]))
                                for value in color]
 
         message = ColorStateMessage(mean_color, brightness, self._state)
