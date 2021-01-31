@@ -27,6 +27,7 @@ class TurnSlowlyStatic(AbstractMessage):
             self.logger.error(error_msg)
             raise IncorrectPayloadException(error_msg)
 
+        color = utils.check_color_message(color)
         current_colors = self.light_controller.read_colors()
         steps = int(time_span * 1000 / settings.Lights.SLOW_CHANGE_WAIT_MS)
         steps = max(steps, 1)
