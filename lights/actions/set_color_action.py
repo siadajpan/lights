@@ -47,3 +47,4 @@ class SetColor(LightAction):
     def execute(self):
         state = self._payload.get(settings.Messages.STATE)
         self.light_controller.update_state(state)
+        super().execute()
