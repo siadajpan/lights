@@ -1,7 +1,15 @@
+from typing import Any, Dict
+
+from lights.actions.set_brightness_action import SetBrightness
+from lights.actions.set_color_action import SetColor
+from lights.actions.turn_off_action import TurnOff
+from lights.actions.turn_on_action import TurnOn
+from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 from lights.light_controller.light_controller import LightController
-from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage
 from lights.settings import settings
+
+ACTIONS = [TurnOff(), TurnOn(), SetBrightness(), SetColor()]
 
 
 class TurnStatic(AbstractMessage):
@@ -10,8 +18,19 @@ class TurnStatic(AbstractMessage):
         self.topic = settings.Mqtt.TOPIC + settings.Messages.TURN_STATIC
         self.light_controller = LightController()
 
-    def execute(self, *args, **kwargs):
-        self.logger.debug('Checking if color is correctly formatted')
-        color = utils.check_color_message(args[0])
-        self.logger.debug('Color has correct format')
-        self.light_controller.turn_static_color(color)
+    def create_action(self, payload):
+        for action in ACTIONS:
+            if action.evaluate_payload(payload):
+                return action
+
+        return None
+
+    def execute(self, payload: Dict[str, Any]):
+        self.logger.debug(f'Executing TurnStatic message with payload '
+                          f'{payload}')
+        action = self.create_action(payload)
+        if not action:
+            msg = f'Turn static message has unexpected payload: {payload}'
+            raise IncorrectPayloadException(msg)
+
+        self.light_controller.add_action(action)

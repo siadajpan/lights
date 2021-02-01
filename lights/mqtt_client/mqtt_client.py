@@ -1,11 +1,8 @@
 import logging
+from queue import Queue
+from typing import Optional
 
 import paho.mqtt.client as mqtt
-
-from lights.errors.incorrect_payload_exception import IncorrectPayloadException
-from lights.errors.incorrect_topic_exception import IncorrectTopicException
-from lights.errors.lights_exception import LightsException
-from lights.messages.message_manager import MessageManager
 from lights.settings import settings
 
 
@@ -17,8 +14,8 @@ class MQTTClient:
         self.client.on_message = self.on_message
         self.client.username_pw_set(username=settings.Mqtt.USERNAME,
                                     password=settings.Mqtt.PASSWORD)
-        self.message_manager = MessageManager()
         self.logger = logging.getLogger(self.__class__.__name__)
+        self.message_queue = Queue()
 
     def connect(self):
         self.logger.info(f'MQTT client connecting to '
@@ -35,13 +32,19 @@ class MQTTClient:
         topic = settings.Mqtt.TOPIC + '#'
         self.logger.info(f'Subscribing to {topic}')
         self.client.subscribe(topic)
+        self.logger.info(f'Unsubscribing {settings.Mqtt.STATE_TOPIC}')
+        self.client.unsubscribe(settings.Mqtt.STATE_TOPIC)
 
     def on_message(self, client, userdata, msg):
         self.logger.info(f'Message received topic: '
                          f'{msg.topic}, payload: {msg.payload}')
+        self.message_queue.put(msg)
+
+    def publish(self, topic: str, payload: Optional[str]):
+        self.logger.info(f'Publishing message topic: {topic}, '
+                         f'payload: {payload}')
         try:
-            self.message_manager.execute_message(msg.payload, msg.topic)
-        except LightsException as ex:
-            self.client.publish(settings.Mqtt.ERROR_TOPIC, ex.message)
+            self.client.publish(topic, payload)
         except Exception as ex:
-            self.client.publish(settings.Mqtt.ERROR_TOPIC, ex)
+            self.logger.error(ex)
+
