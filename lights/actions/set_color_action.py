@@ -51,8 +51,10 @@ class SetColor(LightAction):
 
     def execute(self):
         self.light_controller.state_on()
-        if not self._color or not self._brightness:
-            raise ValueError('Color or brightness not set')
+        if not self._color:
+            raise ValueError('Color not set')
+        if not self._brightness:
+            self._brightness = max(self._color)
 
         self.arguments = [self._color, self._brightness]
         super().execute()
