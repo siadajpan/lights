@@ -29,7 +29,6 @@ class TurnSlowlyStatic(AbstractMessage):
     def execute(self, payload: Dict[str, Any]):
         color, brightness, time_span = self._parse_payload(payload)
         self.light_controller.state_on()
-
         action = ChangeColorAction(color, brightness, time_span)
 
         self.light_controller.add_action(action)
