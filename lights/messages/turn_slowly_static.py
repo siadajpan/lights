@@ -3,6 +3,7 @@ from typing import Dict, Any
 from lights.actions.change_color_action import ChangeColorAction
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 from lights.light_controller.light_controller import LightController
+from lights.messages import utils
 from lights.messages.abstract_message import AbstractMessage
 from lights.settings import settings
 
@@ -22,8 +23,10 @@ class TurnSlowlyStatic(AbstractMessage):
             self._logger.error(error_msg)
             raise IncorrectPayloadException(error_msg)
 
+        color = utils.color_message_to_tuple(color)
         brightness = payload.get(settings.Messages.BRIGHTNESS, max(color))
         time_span = payload.get(settings.Messages.TIME_SPAN, 10)
+
         return color, brightness, time_span
 
     def execute(self, payload: Dict[str, Any]):

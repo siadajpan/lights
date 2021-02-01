@@ -30,6 +30,7 @@ class Messages:
 class Lights:
     LED_AMOUNT = 12
     SLOW_CHANGE_WAIT_MS = 2000
+    MIN_STEPS = 20
 
 
 class Actions:
