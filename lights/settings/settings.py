@@ -12,6 +12,7 @@ class Messages:
     TURN_OFF = 'turn_off'
     TURN_STATIC = 'turn_static'
     TURN_SLOWLY_STATIC = 'turn_slowly_static'
+    TURN_STATIC_RANDOM = 'turn_static_random'
     EMPTY = 'empty'
     STATE = 'state'
     TIME_SPAN = 'time_span'
