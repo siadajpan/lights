@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 
 from lights.light_controller.light_controller import LightController
-from lights.messages.message_manager import MessageManager
+from lights.messages.message_manager import MessageManager, MESSAGES
 from lights.mqtt_client.mqtt_client import MQTTClient
 
 if __name__ == '__main__':
@@ -20,7 +20,7 @@ if __name__ == '__main__':
     light_controller.start()
 
     logging.info('Starting mqtt client')
-    client = MQTTClient()
+    client = MQTTClient([msg.topic for msg in MESSAGES])
     client.connect()
 
     logging.info('Starting message manager')
