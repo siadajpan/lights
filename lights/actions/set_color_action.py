@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Tuple, Optional
 
 from lights.actions.light_action import LightAction
 from lights.light_controller.light_controller import LightController
@@ -10,7 +10,14 @@ class SetColor(LightAction):
     def __init__(self):
         self.light_controller = LightController()
         super().__init__(method=self.light_controller.turn_static_color)
-        self._payload = None
+        self._color: Optional[Tuple[int, int, int]] = None
+        self._brightness: Optional[int] = None
+
+    def set_color(self, color: Tuple[int, int, int]):
+        self._color = color
+
+    def set_brightness(self, brightness: int):
+        self._brightness = brightness
 
     def evaluate_payload(self, payload: Dict[str, Any]) -> bool:
         """
@@ -34,17 +41,18 @@ class SetColor(LightAction):
 
         self._logger.debug('Received payload that fits to set color action')
         color = payload.get(settings.Messages.COLOR)
-        color_tuple = utils.color_message_to_tuple(color)
-        self._logger.debug(f'Received color: {color_tuple}')
-        brightness = self.light_controller.get_brightness()
 
-        self.arguments = [color_tuple, brightness]
-        self._logger.debug(f'Updating set color arguments to '
-                           f'{self.arguments}')
-        self._payload = payload
+        self.set_color(utils.color_message_to_tuple(color))
+        self.set_brightness(self.light_controller.get_brightness())
+
+        self._logger.debug(f'Received color: {self._color} and brightness: '
+                           f'{self._brightness}')
         return True
 
     def execute(self):
-        state = self._payload.get(settings.Messages.STATE)
-        self.light_controller.update_state(state)
+        self.light_controller.update_state(settings.Messages.ON)
+        if not self._color or not self._brightness:
+            raise ValueError('Color or brightness not set')
+
+        self.arguments = [self._color, self._brightness]
         super().execute()

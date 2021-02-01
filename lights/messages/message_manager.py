@@ -11,9 +11,10 @@ from lights.messages.abstract_message import AbstractMessage
 from lights.messages.empty import Empty
 from lights.messages.turn_slowly_static import TurnSlowlyStatic
 from lights.messages.turn_static import TurnStatic
+from lights.messages.turn_static_random import TurnStaticRandom
 from lights.settings import settings
 
-MESSAGES = [TurnStatic(), TurnSlowlyStatic(), Empty()]
+MESSAGES = [TurnStatic(), TurnSlowlyStatic(), Empty(), TurnStaticRandom()]
 
 
 class MessageManager(Thread):
