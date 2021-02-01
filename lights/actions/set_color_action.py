@@ -50,7 +50,7 @@ class SetColor(LightAction):
         return True
 
     def execute(self):
-        self.light_controller.update_state(settings.Messages.ON)
+        self.light_controller.state_on()
         if not self._color or not self._brightness:
             raise ValueError('Color or brightness not set')
 

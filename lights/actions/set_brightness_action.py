@@ -33,5 +33,5 @@ class SetBrightness(LightAction):
         return False
 
     def execute(self):
-        self.light_controller.update_state(settings.Messages.ON)
+        self.light_controller.state_on()
         super().execute()

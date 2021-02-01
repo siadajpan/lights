@@ -26,7 +26,7 @@ class TurnStatic(AbstractMessage):
         return None
 
     def execute(self, payload: Dict[str, Any]):
-        self.logger.debug(f'Executing TurnStatic message with payload '
+        self._logger.debug(f'Executing TurnStatic message with payload '
                           f'{payload}')
         action = self.create_action(payload)
         if not action:

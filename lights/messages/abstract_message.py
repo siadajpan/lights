@@ -9,7 +9,7 @@ class AbstractMessage(ABC):
     def __init__(self):
         self.topic = settings.Mqtt.TOPIC
         self.payload = ''
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self._logger = logging.getLogger(self.__class__.__name__)
 
     def execute(self, payload: Dict[str, Any]):
         raise NotImplementedError()

@@ -14,7 +14,7 @@ class TurnStaticRandom(AbstractMessage):
         self.light_controller = LightController()
 
     def execute(self, payload: Dict[str, Any]):
-        self.logger.debug(f'Executing TurnStatic message with payload '
+        self._logger.debug(f'Executing TurnStatic message with payload '
                           f'{payload}')
         action = SetColor()
         random_color = tuple([random.randint(0, 255) for _ in range(3)])
