@@ -13,12 +13,6 @@ class SetColor(LightAction):
         self._color: Optional[Tuple[int, int, int]] = None
         self._brightness: Optional[int] = None
 
-    def set_color(self, color: Tuple[int, int, int]):
-        self._color = color
-
-    def set_brightness(self, brightness: int):
-        self._brightness = brightness
-
     def evaluate_payload(self, payload: Dict[str, Any]) -> bool:
         """
         Check if payload is type
@@ -42,9 +36,8 @@ class SetColor(LightAction):
         self._logger.debug('Received payload that fits to set color action')
         color = payload.get(settings.Messages.COLOR)
 
-        self.set_color(utils.color_message_to_tuple(color))
-        self.set_brightness(self.light_controller.get_brightness())
-
+        self._color = utils.color_message_to_tuple(color)
+        self._brightness = self.light_controller.get_brightness()
         self._logger.debug(f'Received color: {self._color} and brightness: '
                            f'{self._brightness}')
         return True
@@ -52,7 +45,8 @@ class SetColor(LightAction):
     def execute(self):
         self.light_controller.state_on()
         if not self._color:
-            raise ValueError('Color not set')
+            raise ValueError('Color not set. Run evaluate_payload before '
+                             'calling execute')
         if not self._brightness:
             self._brightness = max(self._color)
 
