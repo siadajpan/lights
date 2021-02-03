@@ -9,11 +9,11 @@ with open('requirements.txt', 'r') as f:
 
 setup(
     name='lights',
-    version='0.1.0',
+    version='0.2.0',
     description='Library for controlling neopixels connected to Raspberry Pi',
     author='Karol Misiarz',
     author_email='forkarolm@gmail.com',
     packages=find_packages(),
     install_requires=requirements,
-    python_requires='>=3.7'
+    python_requires='>=3.6.9'
 )
