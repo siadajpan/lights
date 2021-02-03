@@ -1,13 +1,13 @@
 import logging
 from queue import Queue
-from typing import Optional
+from typing import Optional, List
 
 import paho.mqtt.client as mqtt
 from lights.settings import settings
 
 
 class MQTTClient:
-    def __init__(self):
+    def __init__(self, registered_topics: List[str]):
         self.client = mqtt.Client(client_id="", clean_session=True, userdata=None,
                                   protocol=mqtt.MQTTv311, transport="tcp")
         self.client.on_connect = self.on_connect
@@ -16,6 +16,7 @@ class MQTTClient:
                                     password=settings.Mqtt.PASSWORD)
         self.logger = logging.getLogger(self.__class__.__name__)
         self.message_queue = Queue()
+        self.registered_topics = registered_topics
 
     def connect(self):
         self.logger.info(f'MQTT client connecting to '
@@ -29,11 +30,9 @@ class MQTTClient:
 
     def on_connect(self, client, userdata, flags, rc):
         self.logger.info(f'MQTT connected')
-        topic = settings.Mqtt.TOPIC + '#'
-        self.logger.info(f'Subscribing to {topic}')
-        self.client.subscribe(topic)
-        self.logger.info(f'Unsubscribing {settings.Mqtt.STATE_TOPIC}')
-        self.client.unsubscribe(settings.Mqtt.STATE_TOPIC)
+        for topic in self.registered_topics:
+            self.logger.info(f'Subscribing to {topic}')
+            self.client.subscribe(topic)
 
     def on_message(self, client, userdata, msg):
         self.logger.info(f'Message received topic: '

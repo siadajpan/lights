@@ -43,17 +43,20 @@ class LightController(Thread):
         """
         self._publish_method = publish_method
 
-    def update_state(self, state: str):
-        self._state = state
+    def state_on(self):
+        self._state = settings.Messages.ON
+
+    def state_off(self):
+        self._state = settings.Messages.OFF
 
     def turn_off(self):
-        self.update_state(settings.Messages.OFF)
+        self.state_off()
         self._logger.info(f'Turning off lights, saving lights state: '
                           f'{self._colors}')
         self.turn_into_colors(self._colors, self._brightness)
 
     def turn_on(self):
-        self.update_state(settings.Messages.ON)
+        self.state_on()
         self._logger.info(
             f'Turning on lights to color: {self._colors}')
         self.turn_into_colors(self._colors, self._brightness)

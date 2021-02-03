@@ -26,7 +26,7 @@ class ColorStateMessage(AbstractMessage):
             settings.Messages.BRIGHTNESS: brightness,
             settings.Messages.COLOR: utils.color_to_dict(color)
         }
-        self.logger.debug(f'Generating payload to send, {payload}')
+        self._logger.debug(f'Generating payload to send, {payload}')
 
         return json.dumps(payload)
 
