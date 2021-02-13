@@ -27,6 +27,7 @@ if __name__ == '__main__':
     MESSAGES = [TurnStatic(), TurnSlowlyStatic(), TurnStaticRandom()]
     logging.info('Starting message manager')
     message_manager = MessageManager(MESSAGES, settings.Mqtt.ERROR_TOPIC)
+    message_manager.connect(settings.Mqtt.ADDRESS, settings.Mqtt.PORT)
     light_controller.update_publish_method(message_manager.publish)
     message_manager.start()
 
