@@ -32,7 +32,7 @@ if __name__ == '__main__':
     message_manager.start()
 
     try:
-        message_manager.run()
+        message_manager.loop_forever()
     except KeyboardInterrupt:
         light_controller.stop()
         message_manager.stop()
