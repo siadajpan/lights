@@ -1,2 +1,2 @@
 singleton-decorator
--e git://github.com/siadajpan/mqtt_client.git#egg=mqtt_client
+-e git://github.com/siadajpan/mqtt_client.git#egg=mqtt_utils
