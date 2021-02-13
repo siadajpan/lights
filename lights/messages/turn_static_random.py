@@ -1,16 +1,17 @@
 import random
 from typing import Any, Dict
 
+from mqtt_utils.messages.mqtt_message import MQTTMessage
+
 from lights.actions.change_color_action import ChangeColorAction
 from lights.light_controller.light_controller import LightController
-from lights.messages.abstract_message import AbstractMessage
 from lights.settings import settings
 
 
-class TurnStaticRandom(AbstractMessage):
+class TurnStaticRandom(MQTTMessage):
     def __init__(self):
-        super().__init__()
-        self.topic = settings.Mqtt.TOPIC + settings.Messages.TURN_STATIC_RANDOM
+        super().__init__(
+            settings.Mqtt.TOPIC + settings.Messages.TURN_STATIC_RANDOM)
         self.light_controller = LightController()
 
     def _parse_payload(self, payload):

@@ -1,17 +1,17 @@
 from typing import Dict, Any
 
+from mqtt_utils.messages.mqtt_message import MQTTMessage
+
 from lights.actions.change_color_action import ChangeColorAction
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 from lights.light_controller.light_controller import LightController
 from lights.messages import utils
-from lights.messages.abstract_message import AbstractMessage
 from lights.settings import settings
 
 
-class TurnSlowlyStatic(AbstractMessage):
+class TurnSlowlyStatic(MQTTMessage):
     def __init__(self):
-        super().__init__()
-        self.topic = settings.Mqtt.TOPIC + settings.Messages.TURN_SLOWLY_STATIC
+        super().__init__(settings.Mqtt.TOPIC + settings.Messages.TURN_SLOWLY_STATIC)
         self.light_controller = LightController()
 
     def _parse_payload(self, payload):
