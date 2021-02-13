@@ -28,6 +28,8 @@ if __name__ == '__main__':
     logging.info('Starting message manager')
     message_manager = MessageManager(MESSAGES, settings.Mqtt.ERROR_TOPIC)
     message_manager.connect(settings.Mqtt.ADDRESS, settings.Mqtt.PORT)
+    message_manager.update_credentials(settings.Mqtt.USERNAME,
+                                       settings.Mqtt.PASSWORD)
     light_controller.update_publish_method(message_manager.publish)
     message_manager.start()
 
