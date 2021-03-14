@@ -79,7 +79,8 @@ def message_has_brightness(message: Dict[str, Any]) -> bool:
     return True
 
 
-def color_message_to_tuple(message: Dict[str, Any]) -> Tuple[int, int, int]:
+def color_message_to_tuple(message: Dict[str, Any]) \
+        -> Tuple[np.uint8, np.uint8, np.uint8]:
     r = message.get(settings.Messages.R, None)
     g = message.get(settings.Messages.G, None)
     b = message.get(settings.Messages.B, None)
@@ -88,7 +89,8 @@ def color_message_to_tuple(message: Dict[str, Any]) -> Tuple[int, int, int]:
     return message_tuple
 
 
-def check_color_message(message: Dict[str, Any]) -> Tuple[int, int, int]:
+def check_color_message(message: Dict[str, Any]) \
+        -> Tuple[np.uint8, np.uint8, np.uint8]:
     message_tuple = color_message_to_tuple(message)
     try:
         for el in message_tuple:

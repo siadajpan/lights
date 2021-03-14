@@ -6,6 +6,7 @@ from mqtt_utils.messages.mqtt_message import MQTTMessage
 from lights.actions.generate_random_color_change import \
     GenerateRandomColorChange
 from lights.light_controller.light_controller import LightController
+from lights.messages import utils
 from lights.settings import settings
 
 
@@ -24,6 +25,8 @@ class TurnContinueRandom(MQTTMessage):
         color = payload.get(settings.Messages.COLOR, None)
         if color is None:
             color = tuple([random.randint(0, 255) for _ in range(3)])
+        else:
+            color = utils.color_message_to_tuple(color)
 
         brightness = payload.get(settings.Messages.BRIGHTNESS, max(color))
         time_span = payload.get(settings.Messages.TIME_SPAN, 20)
