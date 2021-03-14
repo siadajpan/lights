@@ -29,7 +29,7 @@ class GenerateRandomColorChange(ChangeColorAction):
             # r, g, b
             for i in range(3):
                 change = random.randint(-delta, delta)
-                color_out[i] = np.clip(self.color[i] + change, 0, 255)
+                color_out.append(np.clip(self.color[i] + change, 0, 255))
             colors_out.append(tuple(np.asarray(color_out, dtype=np.uint8)))
 
         return colors_out
