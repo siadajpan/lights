@@ -6,17 +6,19 @@ from lights.messages import utils
 from lights.settings import settings
 import json
 
+from lights.settings.settings import COLOR_TYPE
+
 
 class ColorStateMessage(MQTTMessage):
     """
     Message that is used for status update. Color and brightness status
     are sent on each light switch
     """
-    def __init__(self, color: Tuple[int, int, int], brightness, state: str):
+    def __init__(self, color: COLOR_TYPE, brightness, state: str):
         super().__init__(settings.Mqtt.STATE_TOPIC)
         self.payload = self._generate_payload(color, brightness, state)
 
-    def _generate_payload(self, color: Tuple[int, int, int], brightness: int,
+    def _generate_payload(self, color: COLOR_TYPE, brightness: int,
                           state: str):
         """
         Create payload that has state, color and brightness

@@ -1,3 +1,8 @@
+from typing import Tuple
+
+import numpy as np
+
+
 class Mqtt:
     ADDRESS = '192.168.0.164'
     PORT = 1883
@@ -38,3 +43,6 @@ class Lights:
 class Actions:
     DEFAULT_ACTION_PRIORITY = 5
     TURN_OFF_PRIORITY = 7
+
+
+COLOR_TYPE = Tuple[np.uint8, np.uint8, np.uint8]

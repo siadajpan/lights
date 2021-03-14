@@ -3,12 +3,13 @@ from typing import Tuple, List
 
 import numpy as np
 
-from lights.actions.change_colors_action import ChangeColorsAction
+from lights.actions.change_color_action import ChangeColorAction
+from lights.settings.settings import COLOR_TYPE
 
 
-class GenerateRandomColorChange(ChangeColorsAction):
-    def __init__(self, color: Tuple[np.uint8, np.uint8, np.uint8],
-                 brightness, time_span, color_value_changes: int = 10):
+class GenerateRandomColorChange(ChangeColorAction):
+    def __init__(self, color: COLOR_TYPE, brightness: List[np.uint8],
+                 time_span, color_value_changes: int = 10):
         self.color: Tuple[np.uint8, np.uint8, np.uint8] = color
         self.brightness = brightness
         self.time_span = time_span
