@@ -4,26 +4,28 @@ from typing import Tuple, List
 import numpy as np
 
 from lights.actions.change_color_action import ChangeColorAction
+from lights.light_controller.light_controller import LightController
 from lights.settings.settings import COLOR_TYPE
 
 
 class GenerateRandomColorChange(ChangeColorAction):
-    def __init__(self, color: COLOR_TYPE, brightness: List[np.uint8],
+    def __init__(self, color: COLOR_TYPE, brightness: np.uint8,
                  time_span, color_value_changes: int = 10):
+        self.light_controller = LightController()
         self.color: Tuple[np.uint8, np.uint8, np.uint8] = color
         self.brightness = brightness
         self.time_span = time_span
         self.color_value_changes = color_value_changes
         new_colors = self._random_colors()
+        new_brightness = self._random_brightness()
 
-        super().__init__(new_colors, brightness, time_span)
+        super().__init__(new_colors, new_brightness, time_span)
 
-    def _random_colors(self) -> List[Tuple[np.uint8, np.uint8, np.uint8]]:
+    def _random_colors(self) -> List[COLOR_TYPE]:
         color = list(self.color)
         delta = self.color_value_changes
-        color_number = len(self.light_controller.read_colors())
         colors_out = []
-        for pixel in range(color_number):
+        for pixel in range(self.light_controller.led_amount):
             color_out = []
             # r, g, b
             for i in range(3):
@@ -32,6 +34,16 @@ class GenerateRandomColorChange(ChangeColorAction):
             colors_out.append(tuple(np.asarray(color_out, dtype=np.uint8)))
 
         return colors_out
+
+    def _random_brightness(self) -> List[np.uint8]:
+        delta = self.color_value_changes
+        brightness_out = []
+        for pixel in range(self.light_controller.led_amount):
+            brightness = self.brightness + random.randint(-delta, delta)
+            brightness = np.clip(brightness, 0, 255)
+            brightness_out.append(brightness)
+
+        return brightness_out
 
     def execute(self):
         super().execute()

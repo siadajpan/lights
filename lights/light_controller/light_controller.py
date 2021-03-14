@@ -39,6 +39,10 @@ class LightController(Thread):
         max_values = [max(values) for values in self._pixels]
         return max_values
 
+    @property
+    def led_amount(self):
+        return self._led_amount
+
     def _initialize_state(self):
         return settings.Messages.ON if self._brightness \
             else settings.Messages.OFF
