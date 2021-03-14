@@ -4,12 +4,14 @@ from typing import List
 import numpy as np
 
 from lights.actions.change_color_action import ChangeColorAction
+from lights.actions.light_action import LightAction
 from lights.light_controller.light_controller import LightController
+from lights.messages import utils
 from lights.settings import settings
 from lights.settings.settings import COLOR_TYPE
 
 
-class GenerateRandomColorChange(ChangeColorAction):
+class GenerateRandomColorChange(LightAction):
     def __init__(self, color: COLOR_TYPE = None, brightness: np.uint8 = None,
                  time_span: int = 5, color_value_changes: int = 30):
         self.light_controller = LightController()
@@ -17,18 +19,17 @@ class GenerateRandomColorChange(ChangeColorAction):
         self.target_brightness = brightness
         self.time_span = time_span
         self.color_value_changes = color_value_changes
-        new_colors = self._random_colors()
-        new_brightness = self._random_brightness()
 
-        super().__init__(new_colors, new_brightness, time_span)
+        super().__init__(None)
 
     def evaluate_payload(self, payload) -> bool:
         self._logger.debug(f'Evaluating payload {payload} in '
                            f'GenerateRandomColorChange')
-        if not super().evaluate_payload(payload):
-            self._logger.debug('Parent class returned False')
-            return False
+        has_state = utils.message_has_state(payload)
 
+        if not has_state:
+            self._logger.debug('Payload doesn\'t have state or color')
+            return False
         if self.light_controller.effect != settings.Effects.RANDOM:
             self._logger.debug('Light controller effect is not Random, it is:'
                                f'{self.light_controller.effect}')
@@ -67,7 +68,11 @@ class GenerateRandomColorChange(ChangeColorAction):
         return brightness_out
 
     def execute(self):
-        super().execute()
+        colors = self._random_colors()
+        brightness = self._random_brightness()
+        current_action = ChangeColorAction(colors, brightness, self.time_span)
+        current_action.execute()
+
         # Add another action like that to keep changing colors until the queue
         # is flashed by other action
         next_action = GenerateRandomColorChange(
