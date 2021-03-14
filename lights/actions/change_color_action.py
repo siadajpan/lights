@@ -33,7 +33,7 @@ class ChangeColorAction(LightAction):
     def calculate_brightness_changes(self, brightness, time_span):
         steps = self._calculate_steps(time_span)
         current_brightness = self.light_controller.read_brightness()
-        brightness_changes = utils.create_value_change_table(
+        brightness_changes = utils.create_linear_value_change_table(
             current_brightness, brightness, steps)
 
         return brightness_changes
