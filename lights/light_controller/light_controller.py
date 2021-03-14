@@ -100,7 +100,8 @@ class LightController(Thread):
         if self._state == settings.Messages.OFF:
             colors = [(0, 0, 0), ] * self._led_amount
 
-        for i, color, brightness in enumerate(zip(colors, brightness_list)):
+        for i, color_brightness in enumerate(zip(colors, brightness_list)):
+            color, brightness = color_brightness
             self._pixels[i] = [int(value * brightness / max(list(color) + [1]))
                                for value in color]
 
