@@ -51,6 +51,8 @@ class Lights:
     LED_AMOUNT = 12
     SLOW_CHANGE_WAIT_MS = 2000
     MIN_STEPS = 20
+    RANDOM_LIGHTS_TIME_SPAN = 3
+    RANDOM_LIGHTS_VALUES_CHANGES = 30
 
 
 class Actions:

@@ -1,5 +1,5 @@
 import random
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 
@@ -12,22 +12,21 @@ from lights.settings.settings import COLOR_TYPE
 
 
 class GenerateRandomColorChange(LightAction):
-    def __init__(self, color: COLOR_TYPE = None, brightness: np.uint8 = None,
-                 time_span: int = 5, color_value_changes: int = 30):
-        self.light_controller = LightController()
-        self.target_color: COLOR_TYPE = color
-        self.target_brightness = brightness
-        self.time_span = time_span
-        self.color_value_changes = color_value_changes
-
+    def __init__(self):
         super().__init__(None)
+        self.light_controller = LightController()
+        self.target_color: Optional[COLOR_TYPE] = None
+        self.target_brightness = None
+        self.time_span = settings.Lights.RANDOM_LIGHTS_TIME_SPAN
+        self.color_value_changes = settings.Lights.RANDOM_LIGHTS_VALUES_CHANGES
 
     def evaluate_payload(self, payload) -> bool:
         self._logger.debug(f'Evaluating payload {payload} in '
                            f'GenerateRandomColorChange')
         has_state = utils.message_has_state(payload)
+        has_color = utils.message_has_color(payload)
 
-        if not has_state:
+        if not has_state or not has_color:
             self._logger.debug('Payload doesn\'t have state or color')
             return False
         if self.light_controller.effect != settings.Effects.RANDOM:
@@ -35,14 +34,16 @@ class GenerateRandomColorChange(LightAction):
                                f'{self.light_controller.effect}')
             return False
 
+        color = payload.get(settings.Messages.COLOR)
+
+        self.target_color = utils.color_message_to_tuple(color)
+        self.target_brightness = self.light_controller.read_max_brightness()
+
         return True
 
     def _random_colors(self) -> List[COLOR_TYPE]:
         delta = self.color_value_changes
         colors_out = []
-
-        if not self.target_color:
-            self.target_color = self.light_controller.get_mean_color()
 
         for pixel in range(self.light_controller.led_amount):
             color_out = []
@@ -56,8 +57,6 @@ class GenerateRandomColorChange(LightAction):
         return colors_out
 
     def _random_brightness(self) -> List[np.uint8]:
-        if not self.target_brightness:
-            self.target_brightness = self.light_controller.read_max_brightness()
         delta = self.color_value_changes
         brightness_out = []
         for pixel in range(self.light_controller.led_amount):
@@ -68,6 +67,8 @@ class GenerateRandomColorChange(LightAction):
         return brightness_out
 
     def execute(self):
+        # When changing color during this run, make sure new color is set
+        self.light_controller.empty_queue()
         colors = self._random_colors()
         brightness = self._random_brightness()
         current_action = ChangeColorAction(colors, brightness, self.time_span)
@@ -75,8 +76,8 @@ class GenerateRandomColorChange(LightAction):
 
         # Add another action like that to keep changing colors until the queue
         # is flashed by other action
-        next_action = GenerateRandomColorChange(
-            self.target_color, self.target_brightness, self.time_span,
-            self.color_value_changes
-        )
+        next_action = GenerateRandomColorChange()
+        next_action.target_color = self.target_color
+        next_action.target_brightness = self.target_brightness
+
         self.light_controller.add_action(next_action)
