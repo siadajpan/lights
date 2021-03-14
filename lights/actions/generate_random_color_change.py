@@ -12,7 +12,7 @@ class GenerateRandomColorChange(ChangeColorAction):
     def __init__(self, color: COLOR_TYPE, brightness: np.uint8,
                  time_span, color_value_changes: int = 10):
         self.light_controller = LightController()
-        self.color: Tuple[np.uint8, np.uint8, np.uint8] = color
+        self.color: COLOR_TYPE = color
         self.brightness = brightness
         self.time_span = time_span
         self.color_value_changes = color_value_changes
@@ -22,7 +22,6 @@ class GenerateRandomColorChange(ChangeColorAction):
         super().__init__(new_colors, new_brightness, time_span)
 
     def _random_colors(self) -> List[COLOR_TYPE]:
-        color = list(self.color)
         delta = self.color_value_changes
         colors_out = []
         for pixel in range(self.light_controller.led_amount):
@@ -30,7 +29,7 @@ class GenerateRandomColorChange(ChangeColorAction):
             # r, g, b
             for i in range(3):
                 change = random.randint(-delta, delta)
-                color_out[i] = np.clip(color[i] + change, 0, 255)
+                color_out[i] = np.clip(self.color[i] + change, 0, 255)
             colors_out.append(tuple(np.asarray(color_out, dtype=np.uint8)))
 
         return colors_out
