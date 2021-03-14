@@ -18,6 +18,7 @@ class SetBrightness(LightAction):
         :raises: IncorrectPayloadException if state or brightness have wrong
         value
         """
+        self._logger.debug(f'Evaluating payload {payload} in SetBrightness')
         has_state = utils.message_has_state(payload)
         has_brightness = utils.message_has_brightness(payload)
         keys = payload.keys()

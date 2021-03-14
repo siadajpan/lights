@@ -22,6 +22,7 @@ class SetEffect(LightAction):
         :raises: IncorrectPayloadException if state, brightness or color have
         wrong value
         """
+        self._logger.debug(f'Evaluating payload {payload} in SetEffect')
         has_state = utils.message_has_state(payload)
         has_effect = utils.message_has_effect(payload)
 

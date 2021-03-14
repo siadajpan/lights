@@ -61,9 +61,9 @@ class ChangeColorAction(LightAction):
         if not has_state:
             return False
 
-        state_off = payload[settings.Messages.STATE] == settings.Messages.OFF
+        state_on = payload[settings.Messages.STATE] == settings.Messages.ON
 
-        return state_off
+        return state_on
 
     def execute(self):
         """

@@ -15,6 +15,7 @@ class TurnOff(LightAction):
         Check if payload is type {'state': 'OFF'}
         :raises: IncorrectPayloadException if state has wrong value
         """
+        self._logger.debug(f'Evaluating payload {payload} in TurnOff')
         has_state = utils.message_has_state(payload)
 
         if not has_state:

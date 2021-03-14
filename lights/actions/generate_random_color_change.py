@@ -23,10 +23,15 @@ class GenerateRandomColorChange(ChangeColorAction):
         super().__init__(new_colors, new_brightness, time_span)
 
     def evaluate_payload(self, payload) -> bool:
+        self._logger.debug(f'Evaluating payload {payload} in '
+                           f'GenerateRandomColorChange')
         if not super().evaluate_payload(payload):
+            self._logger.debug('Parent class returned False')
             return False
 
         if self.light_controller.effect != settings.Effects.RANDOM:
+            self._logger.debug('Light controller effect is not Random, it is:'
+                               f'{self.light_controller.effect}')
             return False
 
         return True
