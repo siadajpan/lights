@@ -12,8 +12,8 @@ class GenerateRandomColorChange(ChangeColorAction):
     def __init__(self, color: COLOR_TYPE, brightness: np.uint8,
                  time_span, color_value_changes: int = 10):
         self.light_controller = LightController()
-        self.color: COLOR_TYPE = color
-        self.brightness = brightness
+        self.target_color: COLOR_TYPE = color
+        self.target_brightness = brightness
         self.time_span = time_span
         self.color_value_changes = color_value_changes
         new_colors = self._random_colors()
@@ -29,7 +29,7 @@ class GenerateRandomColorChange(ChangeColorAction):
             # r, g, b
             for i in range(3):
                 change = random.randint(-delta, delta)
-                color_out.append(np.clip(self.color[i] + change, 0, 255))
+                color_out.append(np.clip(self.target_color[i] + change, 0, 255))
             colors_out.append(tuple(np.asarray(color_out, dtype=np.uint8)))
 
         return colors_out
@@ -38,7 +38,7 @@ class GenerateRandomColorChange(ChangeColorAction):
         delta = self.color_value_changes
         brightness_out = []
         for pixel in range(self.light_controller.led_amount):
-            brightness = self.brightness + random.randint(-delta, delta)
+            brightness = self.target_brightness + random.randint(-delta, delta)
             brightness = np.clip(brightness, 0, 255)
             brightness_out.append(brightness)
 
@@ -49,7 +49,7 @@ class GenerateRandomColorChange(ChangeColorAction):
         # Add another action like that to keep changing colors until the queue
         # is flashed by other action
         next_action = GenerateRandomColorChange(
-            self.color, self.brightness, self.time_span,
+            self.target_color, self.target_brightness, self.time_span,
             self.color_value_changes
         )
         self.light_controller.add_action(next_action)
