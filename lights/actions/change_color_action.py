@@ -13,7 +13,7 @@ class ChangeColorAction(LightAction):
                  brightness: np.uint8, time_span: int):
         self.light_controller = LightController()
         super().__init__(method=None)
-        self.color: Tuple[np.uint8, np.uint8, np.uint8] = color
+        self.colors: Tuple[np.uint8, np.uint8, np.uint8] = color
         self.brightness = brightness
         self.time_span = time_span
 
@@ -35,7 +35,7 @@ class ChangeColorAction(LightAction):
 
     def calculate_brightness_changes(self, brightness, time_span):
         steps = self._calculate_steps(time_span)
-        current_brightness = self.light_controller.read_brightness()
+        current_brightness = self.light_controller.read_max_brightness()
         brightness_changes = utils.create_linear_value_change_table(
             current_brightness, brightness, steps)
 
@@ -59,7 +59,7 @@ class ChangeColorAction(LightAction):
         """
         Add multiple light color actions into light_controller
         """
-        color_sets = self._calculate_color_changes(self.color, self.time_span)
+        color_sets = self._calculate_color_changes(self.colors, self.time_span)
         brightness_changes = self.calculate_brightness_changes(
             self.brightness, self.time_span)
         wait_time = self.time_span / len(color_sets)

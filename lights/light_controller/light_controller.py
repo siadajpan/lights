@@ -7,6 +7,7 @@ from typing import Tuple, List, Callable, Optional
 
 import board
 import neopixel
+import numpy as np
 from singleton_decorator import singleton
 
 from lights.actions.empty_light_action import EmptyLightAction
@@ -27,11 +28,14 @@ class LightController(Thread):
         self.executing_priority = 0
         self._publish_method: Optional[Callable[[str, str], None]] = None
         self._colors: List[Tuple[int, int, int]] = self._pixels
-        self._brightness = self.read_brightness()
+        self._brightness = self.read_max_brightness()
         self._state = self._initialize_state()
 
     def get_brightness(self):
         return self._brightness
+
+    def read_max_brightness(self):
+        return max(self.read_brightness())
 
     def _initialize_state(self):
         return settings.Messages.ON if self._brightness \
@@ -65,9 +69,9 @@ class LightController(Thread):
         self._logger.debug(f'Turning into static color: {color}')
         self.turn_into_colors([color, ] * self._led_amount, brightness)
 
-    def read_brightness(self):
-        max_value = max([max(values) for values in self._pixels])
-        return max_value
+    def read_brightness(self) -> List[int]:
+        max_values = [max(values) for values in self._pixels]
+        return max_values
 
     def set_brightness(self, brightness: int):
         """

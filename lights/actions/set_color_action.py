@@ -37,7 +37,7 @@ class SetColor(LightAction):
         color = payload.get(settings.Messages.COLOR)
 
         self._color = utils.color_message_to_tuple(color)
-        self._brightness = self.light_controller.get_brightness()
+        self._brightness = self.light_controller.read_max_brightness()
         self._logger.debug(f'Received color: {self._color} and brightness: '
                            f'{self._brightness}')
         return True

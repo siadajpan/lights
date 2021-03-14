@@ -44,6 +44,7 @@ class TurnContinueRandom(MQTTMessage):
         self._logger.debug(f'Creating GenerateRandomColorChange class with '
                            f'color: {color}, brightness: {brightness},'
                            f'time_span: {time_span}, delta: {delta}')
+
         action = GenerateRandomColorChange(color, brightness, time_span, delta)
 
         self.light_controller.add_action(action)
