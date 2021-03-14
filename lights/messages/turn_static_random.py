@@ -1,4 +1,5 @@
 import random
+import statistics
 from typing import Any, Dict
 
 from mqtt_utils.messages.mqtt_message import MQTTMessage
@@ -18,7 +19,9 @@ class TurnStaticRandom(MQTTMessage):
         self._logger.debug('Executing Turn Static Random message')
         color = payload.get(settings.Messages.COLOR, None)
         if color is None:
-            color = tuple([random.randint(0, 255) for _ in range(3)])
+            colors = self.light_controller.read_colors()
+            color = tuple([int(statistics.mean(values))
+                           for values in zip(*colors)])
 
         brightness = payload.get(settings.Messages.BRIGHTNESS, max(color))
         time_span = payload.get(settings.Messages.TIME_SPAN, 20)

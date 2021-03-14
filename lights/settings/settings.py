@@ -27,11 +27,17 @@ class Messages:
     BRIGHTNESS = 'brightness'
     COLOR_CHANGE_VALUES = 'color_change_values'
     COLOR = 'color'
+    EFFECT = 'effect'
     R = 'r'
     G = 'g'
     B = 'b'
     COLOR_VALUES = [R, G, B]
     STATE_VALUES = [ON, OFF]
+
+
+class Effects:
+    STANDARD = 'standard'
+    RANDOM = 'random'
 
 
 class Lights:

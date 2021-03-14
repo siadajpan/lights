@@ -62,6 +62,20 @@ def message_has_color(message: Dict[str, Any]) -> bool:
     return True
 
 
+def message_has_effect(message: Dict[str, Any]) -> bool:
+    effect = message.get(settings.Messages.EFFECT, None)
+    if not effect:
+        return False
+
+    if not check_color_message(effect):
+        msg = f'Expected state within {settings.Messages.STATE_VALUES}, ' \
+              f'got: {effect}'
+        logger.error(msg)
+        raise IncorrectPayloadException(msg)
+
+    return True
+
+
 def message_has_brightness(message: Dict[str, Any]) -> bool:
     brightness = message.get(settings.Messages.BRIGHTNESS, None)
     if not brightness:

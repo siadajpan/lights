@@ -5,6 +5,7 @@ import numpy as np
 
 from lights.actions.change_color_action import ChangeColorAction
 from lights.light_controller.light_controller import LightController
+from lights.settings import settings
 from lights.settings.settings import COLOR_TYPE
 
 
@@ -20,6 +21,15 @@ class GenerateRandomColorChange(ChangeColorAction):
         new_brightness = self._random_brightness()
 
         super().__init__(new_colors, new_brightness, time_span)
+
+    def evaluate_payload(self, payload) -> bool:
+        if not super().evaluate_payload(payload):
+            return False
+
+        if self.light_controller.effect != settings.Effects.RANDOM:
+            return False
+
+        return True
 
     def _random_colors(self) -> List[COLOR_TYPE]:
         delta = self.color_value_changes

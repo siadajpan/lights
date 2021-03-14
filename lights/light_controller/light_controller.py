@@ -31,6 +31,7 @@ class LightController(Thread):
         self._colors: List[COLOR_TYPE] = self._pixels
         self._brightness_list = self.read_brightness()
         self._state = self._initialize_state()
+        self._effect = settings.Effects.STANDARD
 
     def read_max_brightness(self):
         return max(self.read_brightness())
@@ -42,6 +43,13 @@ class LightController(Thread):
     @property
     def led_amount(self):
         return self._led_amount
+
+    @property
+    def effect(self):
+        return self._effect
+
+    def set_effect(self, effect: settings.Effects):
+        self._effect = effect
 
     def _initialize_state(self):
         return settings.Messages.ON if self._brightness_list \

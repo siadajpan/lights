@@ -32,6 +32,8 @@ class SetColor(LightAction):
             return False
         if payload[settings.Messages.STATE] == settings.Messages.OFF:
             return False
+        if self.light_controller.effect != settings.Effects.STANDARD:
+            return False
 
         self._logger.debug('Received payload that fits to set color action')
         color = payload.get(settings.Messages.COLOR)
