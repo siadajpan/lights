@@ -59,3 +59,5 @@ class Actions:
 
 
 COLOR_TYPE = Tuple[np.uint8, np.uint8, np.uint8]
+if __name__ == '__main__':
+    print(get_effects())

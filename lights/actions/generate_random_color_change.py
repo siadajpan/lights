@@ -1,5 +1,5 @@
 import random
-from typing import Tuple, List
+from typing import List
 
 import numpy as np
 
@@ -10,8 +10,8 @@ from lights.settings.settings import COLOR_TYPE
 
 
 class GenerateRandomColorChange(ChangeColorAction):
-    def __init__(self, color: COLOR_TYPE, brightness: np.uint8,
-                 time_span, color_value_changes: int = 10):
+    def __init__(self, color: COLOR_TYPE = None, brightness: np.uint8 = None,
+                 time_span: int = 5, color_value_changes: int = 30):
         self.light_controller = LightController()
         self.target_color: COLOR_TYPE = color
         self.target_brightness = brightness
@@ -34,17 +34,24 @@ class GenerateRandomColorChange(ChangeColorAction):
     def _random_colors(self) -> List[COLOR_TYPE]:
         delta = self.color_value_changes
         colors_out = []
+
+        if not self.target_color:
+            self.target_color = self.light_controller.get_mean_color()
+
         for pixel in range(self.light_controller.led_amount):
             color_out = []
             # r, g, b
             for i in range(3):
                 change = random.randint(-delta, delta)
-                color_out.append(np.clip(self.target_color[i] + change, 0, 255))
+                color_out.append(
+                    np.clip(self.target_color[i] + change, 0, 255))
             colors_out.append(tuple(np.asarray(color_out, dtype=np.uint8)))
 
         return colors_out
 
     def _random_brightness(self) -> List[np.uint8]:
+        if not self.target_brightness:
+            self.target_brightness = self.light_controller.read_max_brightness()
         delta = self.color_value_changes
         brightness_out = []
         for pixel in range(self.light_controller.led_amount):

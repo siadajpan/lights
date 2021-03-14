@@ -28,8 +28,6 @@ class SetColor(LightAction):
 
         if not has_state or not has_color:
             return False
-        if sum([has_state, has_color]) != 2:
-            return False
         if payload[settings.Messages.STATE] == settings.Messages.OFF:
             return False
         if self.light_controller.effect != settings.Effects.STANDARD:

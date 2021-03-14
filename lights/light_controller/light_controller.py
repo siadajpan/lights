@@ -91,16 +91,16 @@ class LightController(Thread):
         self._logger.debug(f'Settings brightness {brightness}')
         self.turn_into_colors(self._colors, [brightness, ] * self._led_amount)
 
+    def get_mean_color(self):
+        mean_color = tuple([int(statistics.mean(values))
+                            for values in zip(*self._colors)])
+        return mean_color
+
     def turn_into_colors(self, colors: List[COLOR_TYPE],
                          brightness_list: List[int]):
         self._logger.debug(f'Turning into colors: {colors}, '
                            f'brightness: {brightness_list}')
-        self._colors = colors
         self._brightness_list = brightness_list
-
-        mean_color = tuple([int(statistics.mean(values))
-                            for values in zip(*self._colors)])
-        assert len(mean_color) == 3
         mean_brightness = int(statistics.mean(brightness_list))
 
         # when state is OFF, set pixels to (0, 0, 0), but send state with the
@@ -113,6 +113,7 @@ class LightController(Thread):
             self._pixels[i] = [int(value * brightness / max(list(color) + [1]))
                                for value in color]
 
+        mean_color = self.get_mean_color()
         message = ColorStateMessage(mean_color, mean_brightness, self._state)
         self._publish_method(message.topic, message.payload)
 

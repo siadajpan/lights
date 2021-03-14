@@ -13,7 +13,8 @@ from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 from lights.light_controller.light_controller import LightController
 from lights.settings import settings
 
-ACTIONS = [TurnOff(), TurnOn(), SetBrightness(), SetColor(), SetEffect()]
+ACTIONS = [TurnOff(), TurnOn(), SetBrightness(), SetColor(), SetEffect(),
+           GenerateRandomColorChange()]
 
 
 class TurnStatic(MQTTMessage):
