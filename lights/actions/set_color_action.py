@@ -23,23 +23,28 @@ class SetColor(LightAction):
         :raises: IncorrectPayloadException if state, brightness or color have
         wrong value
         """
+        self._logger.debug(f'Evaluating payload {payload} in SetColor')
         has_state = utils.message_has_state(payload)
         has_color = utils.message_has_color(payload)
 
         if not has_state or not has_color:
-            return False
-        if sum([has_state, has_color]) != 2:
+            self._logger.debug('Payload doesn\'t have state or color')
             return False
         if payload[settings.Messages.STATE] == settings.Messages.OFF:
+            self._logger.debug('State is OFF')
+            return False
+        if self.light_controller.effect != settings.Effects.STANDARD:
+            self._logger.debug('Light controller effect is not Standard, it is'
+                               f'{self.light_controller.effect}')
             return False
 
         self._logger.debug('Received payload that fits to set color action')
         color = payload.get(settings.Messages.COLOR)
 
         self._color = utils.color_message_to_tuple(color)
-        self._brightness = self.light_controller.get_brightness()
-        self._logger.debug(f'Received color: {self._color} and brightness: '
-                           f'{self._brightness}')
+        self._brightness = self.light_controller.read_max_brightness()
+        self._logger.debug(f'SetColor evaluation successful, received color: '
+                           f'{self._color} and brightness: {self._brightness}')
         return True
 
     def execute(self):

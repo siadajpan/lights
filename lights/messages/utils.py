@@ -3,6 +3,8 @@ import logging
 import math
 from typing import Tuple, Any, List, Dict, Optional
 
+import numpy as np
+
 from lights.errors.developer_exception import DeveloperException
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 from lights.settings import settings
@@ -60,6 +62,22 @@ def message_has_color(message: Dict[str, Any]) -> bool:
     return True
 
 
+def message_has_effect(message: Dict[str, Any]) -> bool:
+    effect = message.get(settings.Messages.EFFECT, None)
+    if effect is None:
+        return False
+
+    # bug in setting effect from front-end, after setting effect, it sends
+    # another message with empty effect
+    if effect not in settings.get_effects() + ['']:
+        msg = f'Expected state within {settings.get_effects()}, ' \
+              f'got: {effect}'
+        logger.error(msg)
+        raise IncorrectPayloadException(msg)
+
+    return True
+
+
 def message_has_brightness(message: Dict[str, Any]) -> bool:
     brightness = message.get(settings.Messages.BRIGHTNESS, None)
     if not brightness:
@@ -77,7 +95,8 @@ def message_has_brightness(message: Dict[str, Any]) -> bool:
     return True
 
 
-def color_message_to_tuple(message: Dict[str, Any]) -> Tuple[int, int, int]:
+def color_message_to_tuple(message: Dict[str, Any]) \
+        -> Tuple[np.uint8, np.uint8, np.uint8]:
     r = message.get(settings.Messages.R, None)
     g = message.get(settings.Messages.G, None)
     b = message.get(settings.Messages.B, None)
@@ -86,7 +105,8 @@ def color_message_to_tuple(message: Dict[str, Any]) -> Tuple[int, int, int]:
     return message_tuple
 
 
-def check_color_message(message: Dict[str, Any]) -> Tuple[int, int, int]:
+def check_color_message(message: Dict[str, Any]) \
+        -> Tuple[np.uint8, np.uint8, np.uint8]:
     message_tuple = color_message_to_tuple(message)
     try:
         for el in message_tuple:
@@ -108,7 +128,7 @@ def check_color_message(message: Dict[str, Any]) -> Tuple[int, int, int]:
         raise IncorrectPayloadException(error_message)
 
 
-def create_value_change_table(from_value, to_value, steps):
+def create_sine_value_change_table(from_value, to_value, steps):
     # list 0-1 of multipliers length of steps
     change_table = [- 0.5 * math.cos(x / (steps - 1) * math.pi) + 0.5 for x in
                     range(steps)]
@@ -118,11 +138,18 @@ def create_value_change_table(from_value, to_value, steps):
     return change_table
 
 
+def create_linear_value_change_table(from_value, to_value, steps):
+    change_table = np.linspace(from_value, to_value, steps)
+
+    return change_table
+
+
 def create_color_change_table(from_color, to_color, steps) \
         -> List[Tuple[int, int, int]]:
     values_out = []
     for from_value, to_value in zip(from_color, to_color):
-        change_table = create_value_change_table(from_value, to_value, steps)
+        change_table = create_linear_value_change_table(
+            from_value, to_value, steps)
         values_out.append(change_table)
 
     colors_out = [(r, g, b) for r, g, b in zip(*values_out)]

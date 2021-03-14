@@ -16,10 +16,13 @@ class TurnOn(LightAction):
         Check if payload is type {'state': 'ON'}
         :raises: IncorrectPayloadException if state has wrong value
         """
+        self._logger.debug(f'Evaluating payload {payload} in TurnOn')
         has_state = utils.message_has_state(payload)
         keys = payload.keys()
 
         if not has_state or len(keys) > 1:
+            self._logger.debug('Payload doesn\t have state or has more in the'
+                               'payload than just setting state')
             return False
 
         state_on = payload[settings.Messages.STATE] == settings.Messages.ON

@@ -2,15 +2,19 @@ from typing import Any, Dict
 
 from mqtt_utils.messages.mqtt_message import MQTTMessage
 
+from lights.actions.generate_random_color_change import \
+    GenerateRandomColorChange
 from lights.actions.set_brightness_action import SetBrightness
 from lights.actions.set_color_action import SetColor
+from lights.actions.set_effect_action import SetEffect
 from lights.actions.turn_off_action import TurnOff
 from lights.actions.turn_on_action import TurnOn
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 from lights.light_controller.light_controller import LightController
 from lights.settings import settings
 
-ACTIONS = [TurnOff(), TurnOn(), SetBrightness(), SetColor()]
+ACTIONS = [TurnOff(), TurnOn(), SetBrightness(), SetColor(), SetEffect(),
+           GenerateRandomColorChange()]
 
 
 class TurnStatic(MQTTMessage):
@@ -33,4 +37,5 @@ class TurnStatic(MQTTMessage):
             msg = f'Turn static message has unexpected payload: {payload}'
             raise IncorrectPayloadException(msg)
 
+        self.light_controller.empty_queue()
         self.light_controller.add_action(action)

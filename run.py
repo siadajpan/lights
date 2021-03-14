@@ -4,6 +4,7 @@ from datetime import datetime
 from mqtt_utils.message_manager import MessageManager
 
 from lights.light_controller.light_controller import LightController
+from lights.messages.turn_continue_random import TurnContinueRandom
 from lights.messages.turn_slowly_static import TurnSlowlyStatic
 from lights.messages.turn_static import TurnStatic
 from lights.messages.turn_static_random import TurnStaticRandom
@@ -18,13 +19,14 @@ if __name__ == '__main__':
         filemode='a',
         format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
         datefmt='%H:%M:%S',
-        level=logging.DEBUG)
+        level=logging.INFO)
 
     logging.info('Starting lights controller')
     light_controller = LightController()
     light_controller.start()
 
-    MESSAGES = [TurnStatic(), TurnSlowlyStatic(), TurnStaticRandom()]
+    MESSAGES = [TurnStatic(), TurnSlowlyStatic(), TurnStaticRandom(),
+                TurnContinueRandom()]
     logging.info('Starting message manager')
     message_manager = MessageManager(MESSAGES, settings.Mqtt.ERROR_TOPIC)
     message_manager.connect(settings.Mqtt.ADDRESS, settings.Mqtt.PORT)
