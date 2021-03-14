@@ -64,11 +64,13 @@ def message_has_color(message: Dict[str, Any]) -> bool:
 
 def message_has_effect(message: Dict[str, Any]) -> bool:
     effect = message.get(settings.Messages.EFFECT, None)
-    if not effect:
+    if effect is None:
         return False
 
-    if not check_color_message(effect):
-        msg = f'Expected state within {settings.Messages.STATE_VALUES}, ' \
+    # bug in setting effect from front-end, after setting effect, it sends
+    # another message with empty effect
+    if effect not in settings.get_effects() + ['']:
+        msg = f'Expected state within {settings.Effects}, ' \
               f'got: {effect}'
         logger.error(msg)
         raise IncorrectPayloadException(msg)

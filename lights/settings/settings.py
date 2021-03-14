@@ -36,8 +36,15 @@ class Messages:
 
 
 class Effects:
-    STANDARD = 'standard'
-    RANDOM = 'random'
+    STANDARD = 'Standard'
+    RANDOM = 'Random'
+
+
+def get_effects():
+    effects = [v for k, v in Effects.__dict__.items()
+               if not k.startswith('__')]
+
+    return effects
 
 
 class Lights:

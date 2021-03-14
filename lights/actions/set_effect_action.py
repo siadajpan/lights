@@ -10,7 +10,7 @@ class SetEffect(LightAction):
     def __init__(self):
         self.light_controller = LightController()
         super().__init__(method=self.light_controller.set_effect)
-        self._effect = ''
+        self._effect = None
 
     def evaluate_payload(self, payload: Dict[str, Any]) -> bool:
         """
@@ -38,9 +38,14 @@ class SetEffect(LightAction):
         return True
 
     def execute(self):
-        if not self._effect:
+        if self._effect is None:
             raise ValueError('Effect not set. Run evaluate_payload before '
                              'calling execute')
+
+        # After setting effect, front-end send the same message with empty
+        # effect. Do nothing
+        if self._effect == '':
+            return
 
         self.arguments = [self._effect]
         super().execute()
