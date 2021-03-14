@@ -20,7 +20,7 @@ class TurnContinueRandom(MQTTMessage):
         self.light_controller = LightController()
 
     def _parse_payload(self, payload):
-        self._logger.debug('Executing Turn Static Random message')
+        self._logger.debug('Executing Turn Continue Random message')
         color = payload.get(settings.Messages.COLOR, None)
         if color is None:
             color = tuple([random.randint(0, 255) for _ in range(3)])
@@ -32,12 +32,15 @@ class TurnContinueRandom(MQTTMessage):
         return color, brightness, time_span, delta
 
     def execute(self, payload: Dict[str, Any]):
-        self._logger.debug(f'Executing TurnContinueRandom message with payload '
-                           f'{payload}')
+        self._logger.debug(f'Executing TurnContinueRandom message with payload'
+                           f' {payload}')
         color, brightness, time_span, delta = self._parse_payload(payload)
         self.light_controller.state_on()
         self.light_controller.empty_queue()
 
+        self._logger.debug(f'Creating GenerateRandomColorChange class with '
+                           f'color: {color}, brightness: {brightness},'
+                           f'time_span: {time_span}, delta: {delta}')
         action = GenerateRandomColorChange(color, brightness, time_span, delta)
 
         self.light_controller.add_action(action)

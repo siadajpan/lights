@@ -19,9 +19,9 @@ class GenerateRandomColorChange(ChangeColorAction):
 
     def _random_color(self) -> Tuple[np.uint8, np.uint8, np.uint8]:
         color = list(self.color)
+        delta = self.color_value_changes
         # r, g, b
         for i in range(3):
-            delta = self.color_value_changes
             change = random.randint(-delta, delta)
             color[i] = np.clip(color[i] + change, 0, 255)
 
@@ -31,5 +31,8 @@ class GenerateRandomColorChange(ChangeColorAction):
         super().execute()
         # Add another action like that to keep changing colors until the queue
         # is flashed by other action
-        self.light_controller.add_action(GenerateRandomColorChange(
-            self.color, self.brightness, self.time_span))
+        next_action = GenerateRandomColorChange(
+            self.color, self.brightness, self.time_span,
+            self.color_value_changes
+        )
+        self.light_controller.add_action(next_action)
