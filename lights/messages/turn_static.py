@@ -33,4 +33,5 @@ class TurnStatic(MQTTMessage):
             msg = f'Turn static message has unexpected payload: {payload}'
             raise IncorrectPayloadException(msg)
 
+        self.light_controller.empty_queue()
         self.light_controller.add_action(action)
