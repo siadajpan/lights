@@ -29,7 +29,7 @@ class LightController(Thread):
         self.executing_priority = 0
         self._publish_method: Optional[Callable[[str, str], None]] = None
         self._colors: List[COLOR_TYPE] = self._pixels
-        self._brightness = self.read_brightness()
+        self._brightness_list = self.read_brightness()
         self._state = self._initialize_state()
 
     def read_max_brightness(self):
@@ -44,7 +44,7 @@ class LightController(Thread):
         return self._led_amount
 
     def _initialize_state(self):
-        return settings.Messages.ON if self._brightness \
+        return settings.Messages.ON if self._brightness_list \
             else settings.Messages.OFF
 
     def update_publish_method(self, publish_method):
@@ -63,13 +63,13 @@ class LightController(Thread):
         self.state_off()
         self._logger.info(f'Turning off lights, saving lights state: '
                           f'{self._colors}')
-        self.turn_into_colors(self._colors, self._brightness)
+        self.turn_into_colors(self._colors, self._brightness_list)
 
     def turn_on(self):
         self.state_on()
         self._logger.info(
             f'Turning on lights to color: {self._colors}')
-        self.turn_into_colors(self._colors, self._brightness)
+        self.turn_into_colors(self._colors, self._brightness_list)
 
     def turn_static_color(self, color: Tuple[int, int, int], brightness: int):
         self._logger.debug(f'Turning into static color: {color}')
@@ -88,7 +88,7 @@ class LightController(Thread):
         self._logger.debug(f'Turning into colors: {colors}, '
                            f'brightness: {brightness_list}')
         self._colors = colors
-        self._brightness = brightness_list
+        self._brightness_list = brightness_list
 
         mean_color = tuple([int(statistics.mean(values))
                             for values in zip(*self._colors)])

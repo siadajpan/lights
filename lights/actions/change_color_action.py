@@ -11,11 +11,11 @@ from lights.settings.settings import COLOR_TYPE
 
 class ChangeColorAction(LightAction):
     def __init__(self, colors: List[COLOR_TYPE],
-                 brightness: List[np.uint8], time_span: int):
+                 brightness_list: List[np.uint8], time_span: int):
         self.light_controller = LightController()
         super().__init__(method=None)
         self.colors: List[COLOR_TYPE] = colors
-        self.brightness = brightness
+        self.brightness_list: List[np.uint8] = brightness_list
         self.time_span = time_span
 
     def _calculate_steps(self, time_span):
@@ -47,6 +47,8 @@ class ChangeColorAction(LightAction):
                 brightness, to_brightness, steps)
             brightness_changes.append(change)
 
+        brightness_changes = zip(*brightness_changes)
+
         return brightness_changes
 
     def evaluate_payload(self, payload) -> bool:
@@ -69,7 +71,7 @@ class ChangeColorAction(LightAction):
         """
         color_sets = self._calculate_color_changes(self.colors, self.time_span)
         brightness_changes = self.calculate_brightness_changes(
-            self.brightness, self.time_span)
+            self.brightness_list, self.time_span)
         wait_time = self.time_span / len(color_sets)
 
         for color_set, brightness in zip(color_sets, brightness_changes):
