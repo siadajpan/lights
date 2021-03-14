@@ -9,7 +9,7 @@ with open('requirements.txt', 'r') as f:
 
 setup(
     name='lights',
-    version='0.1.0',
+    version='0.2.0',
     description='Library for controlling neopixels connected to Raspberry Pi',
     author='Karol Misiarz',
     author_email='forkarolm@gmail.com',

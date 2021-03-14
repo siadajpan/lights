@@ -1,2 +1,2 @@
-paho-mqtt
 singleton-decorator
+-e git://github.com/siadajpan/mqtt_client.git#egg=mqtt_utils
