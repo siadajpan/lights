@@ -1,5 +1,7 @@
 from typing import Tuple, Dict, Any
 
+import numpy as np
+
 from lights.actions.light_action import LightAction
 from lights.light_controller.light_controller import LightController
 from lights.messages import utils
@@ -7,10 +9,11 @@ from lights.settings import settings
 
 
 class ChangeColorAction(LightAction):
-    def __init__(self, color, brightness, time_span):
+    def __init__(self, color: Tuple[np.uint8, np.uint8, np.uint8],
+                 brightness: np.uint8, time_span: int):
         self.light_controller = LightController()
         super().__init__(method=None)
-        self.color: Tuple[int, int, int] = color
+        self.color: Tuple[np.uint8, np.uint8, np.uint8] = color
         self.brightness = brightness
         self.time_span = time_span
 
