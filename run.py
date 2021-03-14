@@ -19,7 +19,7 @@ if __name__ == '__main__':
         filemode='a',
         format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
         datefmt='%H:%M:%S',
-        level=logging.DEBUG)
+        level=logging.INFO)
 
     logging.info('Starting lights controller')
     light_controller = LightController()
