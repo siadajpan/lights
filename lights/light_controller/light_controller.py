@@ -13,6 +13,7 @@ from singleton_decorator import singleton
 from lights.actions.empty_light_action import EmptyLightAction
 from lights.actions.light_action import LightAction
 from lights.messages.color_state_message import ColorStateMessage
+from lights.messages.effect_state_message import EffectStateMessage
 from lights.settings import settings
 from lights.settings.settings import COLOR_TYPE
 
@@ -50,6 +51,8 @@ class LightController(Thread):
 
     def set_effect(self, effect: settings.Effects):
         self._effect = effect
+        message = EffectStateMessage(self._effect)
+        self._publish_method(message.topic, message.payload)
 
     def _initialize_state(self):
         return settings.Messages.ON if self._brightness_list \
