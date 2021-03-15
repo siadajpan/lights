@@ -45,7 +45,7 @@ class ChangeColorAction(LightAction):
         for brightness, to_brightness in zip(current_brightness, brightness_list):
             change = utils.create_linear_value_change_table(
                 brightness, to_brightness, steps)
-            brightness_changes.append(change)
+            brightness_changes.append(change.astype(int))
 
         brightness_changes = zip(*brightness_changes)
 
