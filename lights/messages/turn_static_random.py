@@ -1,5 +1,4 @@
 import random
-import statistics
 from typing import Any, Dict
 
 from mqtt_utils.messages.mqtt_message import MQTTMessage
