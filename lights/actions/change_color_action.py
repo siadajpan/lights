@@ -19,8 +19,11 @@ class ChangeColorAction(LightAction):
         self.time_span = time_span
 
     def _calculate_steps(self, time_span):
-        steps = int(time_span * 1000 / settings.Lights.SLOW_CHANGE_WAIT_MS)
-        steps = max(steps, settings.Lights.MIN_STEPS)
+        if time_span > 10:
+            steps = int(time_span * 1000 / settings.Lights.SLOW_CHANGE_WAIT_MS)
+            steps = max(steps, settings.Lights.MIN_STEPS)
+        else:
+            steps = int(time_span * 1000 / settings.Lights.FAST_CHANGE_WAIT_MS)
         return steps
 
     def _calculate_color_changes(self, colors, time_span):
