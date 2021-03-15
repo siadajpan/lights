@@ -7,8 +7,7 @@ from lights.settings import settings
 class TurnOff(LightAction):
     def __init__(self):
         self.light_controller = LightController()
-        super().__init__(method=self.light_controller.turn_off,
-                         priority=settings.Actions.TURN_OFF_PRIORITY)
+        super().__init__(method=self.light_controller.turn_off)
 
     def evaluate_payload(self, payload) -> bool:
         """

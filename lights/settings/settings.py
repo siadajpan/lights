@@ -56,11 +56,4 @@ class Lights:
     RANDOM_LIGHTS_VALUES_CHANGES = 50
 
 
-class Actions:
-    DEFAULT_ACTION_PRIORITY = 5
-    TURN_OFF_PRIORITY = 7
-
-
 COLOR_TYPE = Tuple[np.uint8, np.uint8, np.uint8]
-if __name__ == '__main__':
-    print(get_effects())
