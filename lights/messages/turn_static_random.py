@@ -32,6 +32,7 @@ class TurnStaticRandom(MQTTMessage):
         self.light_controller.empty_queue()
         self.light_controller.state_on()
         self.light_controller.set_effect(settings.Effects.STANDARD)
+
         leds = self.light_controller.led_amount
         action = ChangeColorAction([color, ] * leds, [brightness, ] * leds,
                                    time_span)
