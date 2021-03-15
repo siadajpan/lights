@@ -1,4 +1,3 @@
-import random
 import statistics
 from typing import Any, Dict
 
@@ -32,8 +31,11 @@ class TurnStaticRandom(MQTTMessage):
         self._logger.debug(f'Executing TurnStatic message with payload '
                            f'{payload}')
         color, brightness, time_span = self._parse_payload(payload)
-        self.light_controller.state_on()
         self.light_controller.empty_queue()
+        self.light_controller.state_on()
+        self.light_controller.set_effect(settings.Effects.STANDARD)
+        leds = self.light_controller.led_amount
+        action = ChangeColorAction([color, ] * leds, [brightness, ] * leds,
+                                   time_span)
 
-        action = ChangeColorAction(color, brightness, time_span)
         self.light_controller.add_action(action)
