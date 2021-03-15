@@ -11,7 +11,8 @@ from lights.settings import settings
 
 class TurnSlowlyStatic(MQTTMessage):
     def __init__(self):
-        super().__init__(settings.Mqtt.TOPIC + settings.Messages.TURN_SLOWLY_STATIC)
+        super().__init__(
+            settings.Mqtt.TOPIC + settings.Messages.TURN_SLOWLY_STATIC)
         self.light_controller = LightController()
 
     def _parse_payload(self, payload):
@@ -33,6 +34,8 @@ class TurnSlowlyStatic(MQTTMessage):
         color, brightness, time_span = self._parse_payload(payload)
         self.light_controller.state_on()
         self.light_controller.empty_queue()
-        action = ChangeColorAction(color, brightness, time_span)
+        leds = self.light_controller.led_amount
+        action = ChangeColorAction([color, ] * leds, [brightness, ] * leds,
+                                   time_span)
 
         self.light_controller.add_action(action)

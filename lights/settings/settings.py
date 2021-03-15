@@ -50,16 +50,10 @@ def get_effects():
 class Lights:
     LED_AMOUNT = 12
     SLOW_CHANGE_WAIT_MS = 2000
+    FAST_CHANGE_WAIT_MS = 200
     MIN_STEPS = 20
-    RANDOM_LIGHTS_TIME_SPAN = 3
-    RANDOM_LIGHTS_VALUES_CHANGES = 30
-
-
-class Actions:
-    DEFAULT_ACTION_PRIORITY = 5
-    TURN_OFF_PRIORITY = 7
+    RANDOM_LIGHTS_TIME_SPAN = 2
+    RANDOM_LIGHTS_VALUES_CHANGES = 50
 
 
 COLOR_TYPE = Tuple[np.uint8, np.uint8, np.uint8]
-if __name__ == '__main__':
-    print(get_effects())

@@ -8,6 +8,7 @@ import numpy as np
 from lights.errors.developer_exception import DeveloperException
 from lights.errors.incorrect_payload_exception import IncorrectPayloadException
 from lights.settings import settings
+from lights.settings.settings import COLOR_TYPE
 
 logger = logging.getLogger('lights_utils')
 
@@ -150,7 +151,7 @@ def create_color_change_table(from_color, to_color, steps) \
     for from_value, to_value in zip(from_color, to_color):
         change_table = create_linear_value_change_table(
             from_value, to_value, steps)
-        values_out.append(change_table)
+        values_out.append(change_table.astype(int))
 
     colors_out = [(r, g, b) for r, g, b in zip(*values_out)]
 
@@ -158,7 +159,7 @@ def create_color_change_table(from_color, to_color, steps) \
 
 
 def create_colors_change_table(from_colors, to_colors, steps) \
-        -> List[List[Tuple[int, int, int]]]:
+        -> List[List[COLOR_TYPE]]:
     """
     Create list of colors that each of LED needs to go through to
     switch from one color to another

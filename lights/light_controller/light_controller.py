@@ -13,6 +13,7 @@ from singleton_decorator import singleton
 from lights.actions.empty_light_action import EmptyLightAction
 from lights.actions.light_action import LightAction
 from lights.messages.color_state_message import ColorStateMessage
+from lights.messages.effect_state_message import EffectStateMessage
 from lights.settings import settings
 from lights.settings.settings import COLOR_TYPE
 
@@ -50,6 +51,8 @@ class LightController(Thread):
 
     def set_effect(self, effect: settings.Effects):
         self._effect = effect
+        message = EffectStateMessage(self._effect)
+        self._publish_method(message.topic, message.payload)
 
     def _initialize_state(self):
         return settings.Messages.ON if self._brightness_list \
@@ -69,12 +72,14 @@ class LightController(Thread):
 
     def turn_off(self):
         self.state_off()
+        self.empty_queue()
         self._logger.info(f'Turning off lights, saving lights state: '
                           f'{self._colors}')
         self.turn_into_colors(self._colors, self._brightness_list)
 
     def turn_on(self):
         self.state_on()
+        self.empty_queue()
         self._logger.info(
             f'Turning on lights to color: {self._colors}')
         self.turn_into_colors(self._colors, self._brightness_list)
@@ -134,9 +139,6 @@ class LightController(Thread):
 
     def add_actions(self, actions: List[LightAction]):
         self._logger.debug(f'Adding {len(actions)} actions to queue')
-        # If new action has higher priority, empty queue
-        if actions[0].priority > self.executing_priority:
-            self.empty_queue()
 
         # Put new actions to the queue
         for action in actions:
@@ -146,13 +148,8 @@ class LightController(Thread):
         while not self._stop_thread:
             if self._actions_queue.empty():
                 self._logger.debug('Light controller waiting for actions')
-                # Reset current priority -> All action can take place now
-                self.executing_priority = 0
 
             light_action: LightAction = self._actions_queue.get()
-
-            # Update current priority to current action
-            self.executing_priority = light_action.priority
             light_action.execute()
         self._logger.debug('Exiting')
 

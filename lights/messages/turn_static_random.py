@@ -1,5 +1,4 @@
 import random
-import statistics
 from typing import Any, Dict
 
 from mqtt_utils.messages.mqtt_message import MQTTMessage
@@ -19,9 +18,7 @@ class TurnStaticRandom(MQTTMessage):
         self._logger.debug('Executing Turn Static Random message')
         color = payload.get(settings.Messages.COLOR, None)
         if color is None:
-            colors = self.light_controller.read_colors()
-            color = tuple([int(statistics.mean(values))
-                           for values in zip(*colors)])
+            color = tuple([random.randint(0, 255) for _ in range(3)])
 
         brightness = payload.get(settings.Messages.BRIGHTNESS, max(color))
         time_span = payload.get(settings.Messages.TIME_SPAN, 20)
@@ -32,8 +29,12 @@ class TurnStaticRandom(MQTTMessage):
         self._logger.debug(f'Executing TurnStatic message with payload '
                            f'{payload}')
         color, brightness, time_span = self._parse_payload(payload)
-        self.light_controller.state_on()
         self.light_controller.empty_queue()
+        self.light_controller.state_on()
+        self.light_controller.set_effect(settings.Effects.STANDARD)
 
-        action = ChangeColorAction(color, brightness, time_span)
+        leds = self.light_controller.led_amount
+        action = ChangeColorAction([color, ] * leds, [brightness, ] * leds,
+                                   time_span)
+
         self.light_controller.add_action(action)

@@ -3,10 +3,9 @@ from typing import List, Optional, Dict, Any
 
 
 class LightAction:
-    def __init__(self, method, args: Optional[List] = None, priority=5):
+    def __init__(self, method, args: Optional[List] = None):
         self.method = method
         self.arguments = args
-        self.priority = priority
         self._logger = logging.getLogger(self.__class__.__name__)
 
     def execute(self):
