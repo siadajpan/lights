@@ -1,3 +1,4 @@
+import random
 import statistics
 from typing import Any, Dict
 
@@ -18,9 +19,7 @@ class TurnStaticRandom(MQTTMessage):
         self._logger.debug('Executing Turn Static Random message')
         color = payload.get(settings.Messages.COLOR, None)
         if color is None:
-            colors = self.light_controller.read_colors()
-            color = tuple([int(statistics.mean(values))
-                           for values in zip(*colors)])
+            color = tuple([random.randint(0, 255) for _ in range(3)])
 
         brightness = payload.get(settings.Messages.BRIGHTNESS, max(color))
         time_span = payload.get(settings.Messages.TIME_SPAN, 20)
